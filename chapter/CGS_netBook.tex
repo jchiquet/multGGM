@@ -1,0 +1,66 @@
+\documentclass[a4paper]{article}
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xcolor}
+\usepackage{natbib}
+\usepackage{enumerate}
+\usepackage{macros}
+\usepackage{centernot}
+\usepackage[textwidth=8em,textsize=small]{todonotes}
+
+\usepackage[ruled,vlined]{algorithm2e}
+% Gestion des référence selon le format de sortie
+% configuration de graphicx et hyperref pour sortie PDF
+\usepackage{graphicx}
+\usepackage{subcaption}
+
+\usepackage{tikz}
+\usetikzlibrary{calc,shapes,backgrounds,arrows,automata,shadows,positioning}
+\usepackage{multirow}
+\definecolor{mblue}{RGB}{94,135,173}
+\colorlet{mred}{red!80!black}
+
+\newtheorem*{remark}{Remark}
+% \newtheorem{proposition}{Proposition}
+% \newtheorem{corollary}{Corollary}
+\makeatletter
+\newcommand{\notindep}{\centernot{\indep}}
+\newcommand{\bdot}{\boldsymbol\cdot}
+\newcommand*{\transp}[2][-3mu]{\ensuremath{\mskip1mu\prescript{\smash{\mathrm t\mkern#1}}{}{\mathstrut#2}}}%
+\makeatother
+
+\graphicspath{{./figures/}}
+
+\title{A multiattribute Gaussian graphical model for inference of
+  multiscale regulatory network in breast cancer}
+\date{\today}
+\author{Julien Chiquet, Guillem Rigaill, Martina Sundqvist}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+\todo[inline]{Write the damn thing}
+
+[...]
+
+A deeper generalization of GGM comes by integrating multiple types of
+data measured from diverse platforms, what is sometimes referred to as
+\emph{horizontal} integration: not only does this means a better
+treatment of the heterogeneity of the data, but it also makes the
+network reconstruction more robust.
+
+\input{background}
+
+\input{multiGGM}
+
+\input{numerical_study}
+
+\input{applications}
+
+\bibliographystyle{plainnat}
+\bibliography{biblio}
+
+\end{document}

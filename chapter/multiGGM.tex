@@ -1,0 +1,246 @@
+\section{Accounting for multiscale data: multi-attribute GGM}
+\label{sec:multiattribute_ggm}
+
+We now place  ourselves in the situation where, for  our collection of
+features $\mathcal{P}$, we observe not one but several attributes. The
+question at hand  remains the same, that is to  say, unraveling strong
+interactions between  these features  according to the  observation of
+their   attributes.   Such   networks  are   known  as   ``association
+networks'', which  are systems of  interacting elements, where  a link
+between  two  different  elements  indicates  a  sufficient  level  of
+similarity  between  element  attributes.   In this  section,  we  are
+interested in reconstructing such networks based upon $n$ observations
+of a set of $K$ attributes  of the $p$ elements composing the vertices
+of the  network. To this end,  we propose a natural  generalization of
+sparse GGM to sparse \emph{multi-attribute} GGMs.
+\begin{remark}
+  This  work was  planned for  submission as  a  research paper  with
+  Christophe  Ambroise  and  Eric  Kolazyck when  we  came  across  an
+  independent  work \cite{kolar2014graph}  on the  \texttt{arXiv} that
+  proposes nearly the same approach.  We somewhat gave up this project
+  in its original  form, which I choose to include  in this manuscript
+  as it brings interesting and renewed questions on GGMs.
+\end{remark}
+
+\begin{figure}[htbp!]
+  \centering
+  \begin{tikzpicture}
+    \tikzstyle{every state}=[fill=orange!70!white,draw=none,text=white]
+      
+    \node[state] (dna) at (0,0) {DNA};
+    \node[state] (rna) at (4,0) {RNA};
+    \node[state] (proteins) at (8,0) {Proteins};
+    \node[state] (tf) at (6,-1.2) {TF};
+    \node[state] (enzyme) at (9,-2) {Enz.};
+    \node[draw=none,text=white,fill=mblue, scale=0.75] (gene) at (0.5,0.5) {genes};
+    
+    \path
+    (dna) edge [->] node[above] {transcription} (rna) 
+    (rna) edge [->] node[above] {translation} (proteins) 
+    (dna) edge [loop left,->] node[below=10pt] {replication} (dna) 
+    (proteins) edge [->] node {} (tf) 
+    (proteins) edge [->] node {} (enzyme) 
+    (tf) edge [bend left, ->] node[below] {\textcolor{mblue}{regulates}} ($(rna.west) -(5mm,0)$)
+    (rna) edge [-,line width=2pt,draw=white,bend left] ($(rna.west) -(15mm,0)$)
+    (rna) edge [bend left, ->] node[below] {\textcolor{mblue}{regulates}} ($(rna.west) -(15mm,0)$);
+  \end{tikzpicture}    
+  \caption{Basic example of a multi-attribute network in genomics:
+    activity  of a  gene  can  be measured  at  the transcriptomic  and
+    proteomic levels, and gene regulation affected accordingly}
+\label{fig:central_dogma}
+\end{figure}
+
+\paragraph*{Why    multi-attribute    networks?}    The    need    for
+multi-attribute networks  is relevant in many  application fields, but
+seems particularly applicable in genomics.  Indeed, with the plurality
+of emerging technologies and sequencing  techniques, it is possible to
+record many signals related to the  same set of biological features at
+various scales  or locations of  the cell.  Consider for  instance the
+simplifying -- still hopefully didactic  -- central dogma of molecular
+biology,  sketched   in  Figure   \ref{fig:central_dogma}:  basically,
+expression of a gene encoding for  a protein can be measured either at
+the transcriptome level,  in terms of its quantity of  mRNA, or at the
+protein  level,  in  terms  of the  concentration  of  the  associated
+protein.  Still, different technologies are used to measure either the
+transcriptome  or the  proteome, typically,  microarray or  sequencing
+technology for gene expression  levels and cytometric or spectrometric
+experiments for  protein concentrations.   Although these  signals are
+very  heterogeneous (different  levels of  noise, count  vs. continuous
+data,  etc.),  they  do  share  commonality  as  they  undergo  common
+biological processes.  We then  put an  edge in the  network if  it is
+supported in both spaces (gene and  protein spaces).  Our hope is that
+molecular profiles combined on the  same set of biological samples can
+be  \textit{synergistic}, in  order  to identify  a ``consensus''  and
+hopefully more robust network.
+
+\paragraph*{Multi-attribute GGM.}   Let $\mathcal{P}=\{1,\dots,p\}$ be
+a  set  of  variables  of  interest, each  of  them  having  some  $K$
+attributes.    Consider  the   random   vector  $X   =  (X_1,   \dots,
+X_p)^\intercal$  such  as  $X_i  =(X_{i1},\dots,X_{iK})^\intercal  \in
+\mathbb{R}^K$ for $i\in\mathcal{P}$. The vector $X\in \mathbb{R}^{pK}$
+describes the  $K$ recorded signals  for the $p$ features.   We assume
+that $X$ is a multivariate centered  Gaussian vector, that is, $X \sim
+\mathcal{N}(\mathbf{0}, \bSigma)$,  with covariance  and concentration
+matrices defined block-wise
+\[
+\bSigma = \begin{bmatrix}
+  \bSigma_{11} & & \bSigma_{1p} \\
+  & \ddots & \\
+  \bSigma_{p1} & & \bSigma_{pp} \\
+\end{bmatrix}, \ \invcov = \begin{bmatrix}
+  \invcov_{11} & & \invcov_{1p} \\
+  & \ddots & \\
+  \invcov_{p1} & & \invcov_{pp} \\
+\end{bmatrix}, \quad \bSigma_{ij}, \invcov_{ij}\in \mathcal{M}_{K,K},
+\ \forall (i,j)\in\mathcal{P}^2,
+\]
+where $\mathcal{M}_{a,b}$ is the set  of real-valued matrices with $a$
+rows, $b$ columns.   Such a multi-attribute framework  has been studied
+in \cite{katenka2012inference} with a reconstruction method based upon
+canonical  correlations in  order to  test dependencies  between pairs
+$(i,j)$ at the attribute level  using covariance.  Here, we propose to
+rely on partial  correlations in a multivariate  framework rather than
+(canonical)  correlations   to  describe  relationships   between  the
+features, and  thus extend  GGM to  a multi-attribute  framework.  The
+objective   is  to   define   a  ``canonical''   version  of   partial
+correlations.      In    our     setting,    the     target    network
+$\graph=(\mathcal{P},\mathcal{E})$  is  defined  as  the  multivariate
+analog of the conditional graph for univariate GGM, that is
+\begin{equation}
+  \label{eq:multi_net}
+  (i,j)  \in  \mathcal{E}  \Leftrightarrow \invcov_{ij}  \neq  \bzr_{KK},
+  \quad \forall i\neq j.
+\end{equation}
+In words,  there is  no edge  between two variables  $i$ and  $j$ when
+their attributes are all conditionally independent.
+
+\paragraph*{A  multivariate version  of neighborhood  selection.}  Our
+idea for performing sparse multi-attribute  GGM inference is to define
+a  multivariate   analog  of   the  neighborhood   selection  approach
+\cite{2006_AS_Meinshausen} (see Section \ref{sec:sparseGGM}, Equations
+\eqref{eq:Lasso_MB} and \eqref{eq:MB_pseudo}). Indeed,  it seems to be
+the   most   natural   and  convenient   setup   toward   multivariate
+generalization.   Nevertheless,  we  think  that  the  graphical-Lasso
+\eqref{eq:MLE_l1},  CLIME \eqref{eq:clime}  or SPACE  \eqref{eq:space}
+settings may have a close equivalent multi-attribute version.
+
+To  this  end,  we  look   at  the  multivariate  analog  of  equation
+\eqref{eq:lincoef2invcov}: in a  multivariate linear regression setup,
+it is a matter of straightforward  algebra to see that the conditional
+distribution of $X_j\in\Rset^K$ on the other variables is
+\begin{equation*}
+  X_j \, |\,  X_{\backslash j}  = x \sim  \mathcal{N}(- \invcov_{jj}^{-1}\invcov_{j
+    \backslash j} x , \invcov_{jj}^{-1})\enskip.
+\end{equation*} 
+Equivalently,     letting      $\displaystyle     \mathbf{B}_j^T     =
+-\invcov_{jj}^{-1} \invcov_{j\backslash j}$, one has
+\begin{equation*}
+  X_j \, |\, X_{\backslash j} = \mathbf{B}_j^T X_{\backslash j} +
+  \boldsymbol\varepsilon_j \quad \boldsymbol\varepsilon_j
+  \sim \mathcal{N}(\mathbf{0},\invcov_{jj}^{-1}), \quad \boldsymbol\varepsilon_j \perp X,
+\end{equation*}
+where $\mathbf{B}_j\in\mathcal{M}_{(p-1)K,K}$ is defined block-wise
+\begin{equation*}
+  \mathbf{B}_j = \begin{bmatrix}
+    \mathbf{B}_j^{(1)} \\ \hline
+    \vdots \\ \hline
+    \mathbf{B}_j^{(p-1)} \\ 
+  \end{bmatrix} = \invcov_{jj}^{-1} \times \begin{bmatrix}
+    \invcov_j^{(1)} \\ \hline
+    \vdots \\ \hline
+    \invcov_j^{(p-1)} \\ 
+  \end{bmatrix},
+\end{equation*}
+and  where each  $\mathbf{B}_j^{(i)}$ is  a $K\times  K$ matrix  which
+links attributes  of variables  $(i,j)$.  We  see that  recovering the
+support of $\bB_j$ block-wise is equivalent to reconstructing the network
+defined  in  \eqref{eq:multi_net}.  Estimation   of  $\bB_j$  is  thus
+typically achieved through  sparse methods.  To this  end, we consider
+an  i.i.d.   sample  $\{X^\ell\}_{\ell=1}^n$  of $X$  such  that  each
+attribute is observed $n$ times for the $p$ variable, each $X^n$ being
+a $pK$-size  row vector staked  in a $\mathcal{M}_{n,pK}$  data matrix
+$\mathbf{X}$ , so that $\bX_j  \in \mathcal{M}_{n,K}$ is a real-value,
+$n \times  K$ block  matrix containing  the data  related to  the $j$th
+variable:
+\begin{multline*}
+  \mathbf{X} = \begin{bmatrix}
+    \mathbf{x}^1 \\ \hline
+    \vdots \\\hline
+    \mathbf{x}^N \\
+  \end{bmatrix}
+  = \begin{bmatrix}
+    \mathbf{X}_1 & \dots & \mathbf{X}^p \\
+  \end{bmatrix} 
+  % = \begin{bmatrix}
+  %   \mathbf{x}_1^1 & \dots & \mathbf{x}_1^p \\ \hline
+  %   \vdots \\\hline
+  %   \mathbf{x}_N^1 & \dots & \mathbf{x}_N^p \\
+  % \end{bmatrix}
+  % \\
+  = \begin{bmatrix}
+    X^{11}_1 & X^{1K}_1 & \vline & \dots & \vline & X^{p1}_1 & \dots & X^{pK}_1 \\ \hline
+    \vdots & \vdots & \vline & \dots & \vline & & & \\ \hline
+    X^{11}_n & X^{1K}_n & \vline & \dots & \vline & X^{1K}_n & \dots & X^{pK}_n \\ 
+  \end{bmatrix}.
+\end{multline*}
+
+Using  these notations,  a direct  generalization of  the neighborhood
+selection is to  predict for each $j=1,\dots,p$ the  data block $\bX_j$
+by regressing  on $\bX_{\backslash  j}$. In matrix  form, this  can be
+written as the optimization problem
+\begin{equation}
+  \label{eq:multi_penalized}
+  \arg  \min_{\bB_j  \in  \mathbb{R}}  J(\mathbf{B_j}),  \qquad
+  J(\bB_j) = \frac{1}{2n} \left\|
+    \bX_j - \bX_{\backslash j}\bB_j\right\|_F^2 +
+  \lambda \ \Omega(\bB_j),
+\end{equation}
+where $\|\bA\|_F = \sqrt{\sum_{i,j} \bA_{ij}^2}$ is the Frobenius norm
+of  matrix   $\bA$  and  $\Omega$   is  a  penalty   which  constrains
+$\mathbf{B}_j$ block-wise.
+
+\paragraph{Choosing  a penalizer.}   Various choices  for $\Omega$  in
+\eqref{eq:multi_penalized}   seem   relevant:    by   simply   setting
+$\Omega_0(A) = \sum_{i,j} |A_{i,j}|$, we just encourage sparsity among
+the $\mathbf{B}_i$  and thus do  not couple the attributes.   A clever
+choice would be to activate a set of attributes all together: hence, the
+group is defined  by all the $K$ attributes between  variables $i$ and $j$,
+therefore the penalizer turns to a group-Lasso like penalty
+\begin{equation}
+  \label{eq:penalty_grp_variate}
+  \Omega_1(\mathbf{B}_j) = \sum_{i \in \mathcal{P}\backslash j} \|\mathbf{B}_j^{(i)}\|_F,
+\end{equation}
+in  which  case  convex  analysis  and  subdifferential  calculus  (see
+\cite{2006_CO_Boyd})  can be  used to  show that  a $\mathbf{B}_i$  is
+optimal for Problem \eqref{eq:multi_penalized} if and only if
+\begin{equation}
+  \label{eq:optimality}
+  \left\{\begin{array}{lrl}
+      \forall i : \mathbf{B}_j^{(i)} \neq 0, & \left(\mathbf{S}_{ij} +
+        \frac{\lambda}{\|\mathbf{B}_j^{(i)}\|_F           }          I
+      \right)^{-1} \mathbf{S}_{ij} & = \mathbf{B}_j^{(i)} \\ 
+      \forall i : \mathbf{B}_j^{(i)} = \bzr_{KK}, & 
+      \| \mathbf{S}_{ij} \|_F & \leq \lambda \\
+  \end{array}\right.,
+\end{equation}
+where  $\bS_{ij}\in\mathcal{M}_{KK}$ is  a  $K\times K$  block in  the
+empirical covariance matrix $\bS_n  = n^{-1} \bX^\top\bX$, which shows
+the  same block-wise  decomposition as  $\bSigma$ or  $\bTheta$.  This
+paves  the way  for  an optimization  algorithm like  block-coordinate
+descent which we implemented, although we omit details here.
+
+At the time we were working on this model, another idea that we had in
+mind --- although we  did not push too far --- was  to propose a penalty
+based  upon the  nuclear norm  $\|\bA\|_\star =  \sum_j \nu_j$,  where
+$(\nu_1, \dots,\nu_p)$ is the vector of singular values of $\bA$. This
+somewhat penalizes the rank of a  matrix, which would be desirable for
+matrix $\bTheta_{ij}$ when many attributes are shared between $(i,j)$.
+We thus might define a penalty  on $\invcov$ in place of $\bB_j$, with
+something like
+\begin{equation}
+  \label{eq:penalty_rank_variate}
+  \Omega_1(\mathbf{B}_j)  =   \sum_{i  \in   \mathcal{P}\backslash  j}
+  \|\invcov_{ij} \|_\star.
+\end{equation}
+However, this idea remains only at the feasible stage for now.
+

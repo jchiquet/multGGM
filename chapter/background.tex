@@ -1,0 +1,527 @@
+\section{Background}
+\label{sec:chap2:background}
+
+Gaussian              Graphical             Models              (GGMs)
+\cite{1996_Book_Lauritzen,whittaker1990graphical}    are     a    very
+convenient tool  for describing the  patterns at play in  complex data
+sets.  Indeed, through the notion of partial correlation, they provide
+a  well-studied framework  for spotting  direct relationships  between
+variables, and thus  reveal the latent structure in a  way that can be
+easily interpreted. Application  areas are very broad  and include for
+instance  gene regulatory  network  inference in  biology (using  gene
+expression data) as well  as spectroscopy, climate studies, functional
+magnetic  resonance imaging,  etc.  Estimation  of GGMs  in a  sparse,
+high-dimensional setting  has thus  received much  attention recently.
+This section provides an overview of this hot and competitive research
+field of statistical learning.  I mainly focus on the state-of-the-art
+$\ell_1$-regularization  methods   and  their  most   recent  striking
+variants, insisting on their computational and statistical properties.
+This provides the  reader with the necessary material  to approach the
+second section of this chapter  dedicated to my personal contributions
+to this field.
+
+\subsection{Basics on Gaussian graphical models}
+\label{sec:chap2:background:ggm}
+
+Let  $\mathcal{P}=\{1,\dots,p\}$  be  a  set  of  fixed  vertices  and
+$X=(X_1,\dots,X_p)^\intercal$ a random vector describing a signal over
+this set.   The vector  $X\in \Rset^p$ is  assumed to  be multivariate
+Gaussian  with unknown  mean and  unknown covariance  matrix $\covm  =
+(\Sigma_{ij})_{(i,j)\in\mathcal{P}^2}$.   No  loss  of  generality  is
+involved    when   centering    $X$,   so    we   may    assume   that
+$X\sim\mathcal{N}(\bzr_p,\covm)$. The covariance matrix $\covm$, equal
+to  $\E(XX^\intercal)$  under the  assumption  that  $X$ is  centered,
+belongs to the set  $\mathcal{S}_{p}^+$ of positive definite symmetric
+matrices of size $p\times p$.
+
+\paragraph*{Graph of  conditional dependencies.}  GGMs  endow Gaussian
+random  vectors  with a  graphical  representation  $\graph$ of  their
+\emph{conditional dependency structure}: two variables $i$ and $j$ are
+linked  by an  undirected edge  $(i,j)$ if,  conditional on  all other
+variables   indexed  by   $\mathcal{P}  \backslash   \{i,j\}$,  random
+variables $X_i$ and  $X_j$ remain or become dependent.   Thanks to the
+Gaussian assumption, conditional independence actually boils down to a
+zero  conditional  covariance $\textrm{cov}(X_i,X_j  |  X_{\mathcal{P}
+  \backslash \{i,j\}})$, or equivalently to a zero partial correlation
+which  we  denote  by  $\rho_{ij}$,  the  latter  being  a  normalized
+expression of the former.
+
+Concretely, the  inference of a GGM  is based upon a  classical result
+originally emphasized in  \cite{1972_Biometrics_Dempster} stating that
+partial  correlations $\rho_{ij}$  are  actually  proportional to  the
+corresponding entries  in the \emph{inverse} of  the covariance matrix
+$\covm^{-1}  =   \invcov$,  also  known  as   the  \emph{concentration
+  matrix}. More precisely, we have
+\begin{equation}
+  \label{eq:parcor2invcov}
+  \rho_{ij}      =  -\invcov_{ij}      /
+  \sqrt{\invcov_{ii} \invcov_{jj}}, \qquad \invcov_{ii}=
+  \var(X_i|X_{\mathcal{P}\backslash i})^{-1};
+\end{equation}
+thus $\invcov$ directly describes the conditional dependency structure
+of $X$. Indeed, after a simple rescaling, $\invcov$ can be interpreted
+as the adjacency  matrix of an undirected  weighted graph representing
+the partial  covariance (or  correlation) structure  between variables
+$X_{1},\ldots,X_{p}$. Formally,  we denote by $\graph  = (\mathcal{P},
+\mathcal{E})$ this graph, the edges of which are characterized by
+\begin{displaymath}
+  (i,j) \in \mathcal{E} \Leftrightarrow \invcov_{ij} \neq 0, \quad \forall
+  (i,j) \in \mathcal{P}^2 \text{ such that } i\neq j.
+\end{displaymath}
+In words,  $\graph$ has  no self-loop and  contains all  edges $(i,j)$
+such  that $\invcov_{ij}$  is nonzero.   Therefore recovering  nonzero
+entries  of  $\invcov$  is  equivalent   to  inferring  the  graph  of
+conditional dependencies  $\graph$, and the correct  identification of
+nonzero entries is the main issue in this framework.
+
+\paragraph*{Maximum Likelihood inference.}  GGMs  fall into the family
+of  exponential  models  for  which   the  whole  range  of  classical
+statistical tools applies.  As soon as  the sample size $n$ is greater
+than  the number  $p$ of  variables,  the likelihood  admits a  unique
+maximum  over  $\mathcal{S}_{p}^+$,   defining  a  maximum  likelihood
+estimator  (MLE): suppose  we observe  a sample  $\set{X^1,\dots,X^n}$
+composed of $n$  i.i.d.  copies of $X$, stored  row-wise once centered
+in a matrix $\bX \in \Rset^{n\times  p}$ such that $(X^i)^\top$ is the
+$i$th row  of $\bX$.   The empirical covariance  matrix is  denoted by
+$\empcov   =  \mathbf{X}^\intercal   \mathbf{X}/n$.   Maximizing   the
+likelihood is equivalent to
+\begin{equation}
+\label{eq:MLE_GGM}
+\widehat{\invcov}^{\text{mle}} = \argmax_{\invcov  \in \mathcal{S}_p^+}\quad
+\log \det(\invcov) - \trace(\invcov \empcov).
+\end{equation}
+When $n>p$, Problem \eqref{eq:MLE_GGM}  admits a unique solution equal
+to  $\empcov$.   The  scaled  empirical  covariance  matrix  $\empcov$
+follows  a  Wishart  distribution  while  its  inverse  $\empcov^{-1}$
+follows an inverse Wishart distribution with computable parameters.
+
+There are two  major limitations with the MLE  regarding the objective
+of  graph  reconstruction  by  recovering the  pattern  of  zeroes  in
+$\invcov$. First, it provides an  estimate of the saturated graph: all
+variables  are connected  to each  other; second,  we need  $n$ to  be
+larger than  $p$ to be  able to even  define this estimator,  which is
+rarely the case in genomics. In  any case, the need for regularization
+and feature selection is huge.  A  natural assumption is that the true
+set of direct relationships between  the variables remains small, that
+is, the  true underlying  graph is  sparse (say, of  the order  of $p$
+rather than the  order of $p^2$).  Sparsity  makes estimation feasible
+in  the  case where  $n<p$  since  we  can  concentrate on  sparse  or
+shrinkage  estimators  with  fewer  degrees of  freedom  than  in  the
+original problem.   Henceforth, the question of  selecting the correct
+set  of edges  in  the graph  is  treated as  a  question of  variable
+selection.
+
+\paragraph*{High-dimensional inference of GGM.}  The different methods
+for the  inference of  sparse GGMs  in high-dimensional  settings fall
+into roughly  three categories.   The first  contains constraint-based
+methods,            performing            statistical            tests
+\cite{2006_JMLR_Castelo,2007_SS_drton,2008_JSPI_drton,2011_BMC_Kiiveri,2006_SAGMB_Wille}.
+However, they  either suffer  from the excessive  computational burden
+\cite{2006_JMLR_Castelo,2006_SAGMB_Wille}   or    strong   assumptions
+\cite{2007_SS_drton,2008_JSPI_drton} that correspond  to regimes never
+attained  in  real situations.   The  second  of these  categories  is
+composed     of    Bayesian     approaches,    see     for    instance
+\cite{2004_JMVA_Dobra,2005_SS_Dobra,rau2012reverse,schwaller2015tree}.
+However, constructing priors  on the set of  concentration matrices is
+not a trivial task and the use  of MCMC procedures limits the range of
+applications to moderate-sized networks.   The third category contains
+regularized estimators, which add a  penalty term to the likelihood in
+order to reduce the complexity or  degrees of freedom of the estimator
+and more generally regularize the  problem: throughout this chapter, I
+focus  on  methods   of  this  kind.   More  precisely,   I  focus  on
+$\ell_1$-regularized  procedures,  which  are   freed  from  any  test
+procedure -- and  thus multiple testing issues --  since they directly
+perform  estimation and  selection of  the most  significant edges  by
+zeroing entries in the estimator  of $\invcov$.  The remainder of this
+section is dedicated to a quick review of the state-of-the-art methods
+of this kind.
+
+\subsection{Sparse methods for GGM inference}
+\label{sec:sparseGGM}
+
+The idea  underlying sparse  methods for  GGM is the  same as  for the
+Lasso   in   linear  regression   (see   Example~\ref{ex:lin_reg_sel},
+Section~\ref{sec:recent_stat:strategy}): it basically uses 
+$\ell_1$-regularization  as  a  convex  surrogate  of  the  ideal  but
+computationally intensive $\ell_0$-regularized problem:
+\begin{equation}
+  \argmax_{\invcov  \in \mathcal{S}_p^+}\quad
+  \log \det(\invcov) - \trace(\invcov \empcov) - \lambda\ 
+  \|\invcov\|_{\ell_0}.
+  \label{eq:ell0}
+\end{equation}
+
+Problem \eqref{eq:ell0} achieves a  trade-off between the maximization
+of  the likelihood  and  the sparsity  of the  graph  within a  single
+optimization problem.  The  penalty term can also be  interpreted as a
+log prior  on the coefficients in  a Bayesian perspective. BIC  or AIC
+criteria  are special  cases  of such  $\ell_0$ regularized  problems,
+except  that the  maximization is  made  upon a  restricted subset  of
+candidates  $\{\tilde{\Theta}_1,\dots,   \tilde{\Theta}_m\}$  and  the
+choice of  $\lambda$ is fixed ($\log(n)$  for BIC and $1/2$  for AIC).
+Actually solving \eqref{eq:ell0} would  require the exploration of all
+possible $2^p$ graphs.   On the contrary, by  preserving the convexity
+of the optimization problem,  $\ell_1$-regularization paves the way to
+fast  algorithms.   For  the  price  of  a  little  bias  on  all  the
+coefficients,  we  get  to  shrink some  coefficients  to  exactly  0,
+operating  selection and  estimation in  one single  step as  hoped in
+Problem \eqref{eq:ell0}.
+
+\paragraph*{Graphical-Lasso.}    The   criterion  optimized   by   the
+graphical-Lasso       was       simultaneously       proposed       in
+\cite{2007_Biometrika_Yuan}    and   \cite{2008_JMLR_Banerjee}.     It
+corresponds    to   the    estimator   obtained    by   fitting    the
+$\ell_1$-penalized Gaussian  log-likelihood, \emph{i.e.}  the tightest
+convex relaxation of \eqref{eq:ell0}:
+\begin{equation}
+  \label{eq:MLE_l1}
+  \widehat{\invcov}^{\text{glasso}}_\lambda = \arg \max_{\invcov \in \mathcal{S}^+_p} \; \log
+  \det(\invcov) - \trace(\invcov \empcov) -
+  \lambda\ \|\invcov\|_{\ell_1}.
+\end{equation}
+In   this  regularized   problem,   the   $\ell_1$-norm  drives   some
+coefficients    of    $\invcov$    to    zero.     The    non-negative
+parameter~$\lambda$ tunes  the global  amount of sparsity:  the larger
+the $\lambda$,  the fewer edges in  the graph. A large  enough penalty
+level produces an  empty graph.  As $\lambda$  decreases towards zero,
+the  estimated  graph  tends  towards  the  saturated  graph  and  the
+estimated   concentration  matrix   tends   towards   the  usual   MLE
+\eqref{eq:MLE_GGM}.   By  construction,  this  approach  guarantees  a
+well-behaved  estimator   of  the  concentration   matrix  \emph{i.e.}
+sparse, symmetric and positive-definite, which is a great advantage of
+this method.
+
+Ever since Criterion \eqref{eq:MLE_l1} was proposed, many efforts have
+been   dedicated   to   developing  efficient   algorithms   for   its
+optimization. In  the original proposal  of \cite{2008_JMLR_Banerjee},
+it  is  shown  that  solving  for  one  row  of  matrix  $\invcov$  in
+\eqref{eq:MLE_l1} while keeping other rows fixed boils down to a Lasso
+problem.  The global problem is solved by cycling over the matrix rows
+until convergence.   Thus, if one  considers that $L$ passes  over the
+whole matrix  are needed to  reach convergence, a rough  estimation of
+the  overall cost  is of  the  order of  $L p  \times \text{(cost  for
+  solving  for  one  row)}$.   With  a  block-coordinate  update  each
+iteration  over  a row  has  $\mathcal{O}(p^3)$  complexity and  their
+implementation is $\mathcal{O}(L  p^4)$ for $L$ sweeps  over the whole
+matrix  $\widehat{\invcov}$.   In \cite{2008_JMLR_Banerjee}  again,  a
+rigorous    analysis   is    conducted    in   Nesterov's    framework
+\cite{nesterov2005smooth}  showing that  the complexity  for a  single
+$\lambda$     reaches     $\mathcal{O}(p^{4.5}/\varepsilon)$     where
+$\varepsilon$ is the desired accuracy of the final estimate.
+
+The   \emph{Graphical-Lasso}   algorithm  of   \cite{2007_BS_Friedman}
+follows the same line but builds  on a coordinate descent algorithm to
+solve  each underlying  Lasso  problem.  While  no precise  complexity
+analysis is  possible with  these methods,  empirical results  tend to
+show  that this  algorithm is  faster  than the  original proposal  of
+\cite{2008_JMLR_Banerjee}.  Additional insights  on the convergence of
+the  graphical-Lasso  are  provided  in  \cite{mazumder2012graphical},
+simultaneously   with  \cite{witten2011new},   showing  how   to  take
+advantage  of the  problem sparsity  by decomposing  \eqref{eq:MLE_l1}
+into block diagonal problems depending on $\lambda$: this considerably
+reduces the computational burden  in practice.  Implementations of the
+graphical-Lasso  algorithm are  available  in the  \texttt{R}-packages
+\textbf{glasso},     \textbf{huge}    \cite{2014_huge_package},     or
+\textbf{simone} \cite{simone,2009_BI_Chiquet}. The most recent notable
+efforts related  to the optimization  of \eqref{eq:MLE_l1} are  due to
+\cite{hsieh2014quic,NIPS2013_4923}  and  the   QUIC  (then  BIG\&QUIC)
+algorithm, a quadratic approximation which allows \eqref{eq:MLE_l1} to
+be solved up to $p=1,000,000$  with a super-linear rate of convergence
+and  with   bounded  memory.   The   \texttt{R}-package  \textbf{quic}
+implements the first version of this algorithm.
+
+On  the  statistical  side,  the  most striking  results  are  due  to
+\cite{2011_EJS_Ravikumar}: they show that selection consistency of the
+estimator defined  by \eqref{eq:MLE_l1}  -- that  is, recovery  of the
+true underlying  graphical structure  --, is  met in  the sub-Gaussian
+case when, for an appropriate choice of $\lambda$, the sample size $n$
+is of the  same order as $\mathcal{O}(d^2 \log(p))$, where  $d$ is the
+highest  degree in  the target  graph.  Additional  conditions on  the
+empirical  covariance between  relevant  and  irrelevant features  are
+required, known as the  ``irrepresentability conditions'' in the Lasso
+case.   Such  statistical results  are  important  since they  provide
+insights on the  ``data'' situations where such methods  may either be
+successful  or completely  hopeless.   More on  this  is discussed  in
+\cite{2012_EJS_Verzelen}.  For  instance, this should  prevent blindly
+applying the graphical-Lasso  in situations where the  sample size $n$
+is too  small compared to  $p$.  Similarly,  when the presence  of hub
+nodes with  high degree  is suspected, the  estimated graph  should be
+interpreted with care.
+
+\paragraph*{Neighborhood  selection.}   This   approach,  proposed  in
+\cite{2006_AS_Meinshausen},  determines   the  graph   of  conditional
+dependencies by  solving a series  of $p$ independent  Lasso problems,
+successively estimating  the neighborhoods  of each variable  and then
+applying a  final reconciliation step  as post-treatment to  recover a
+symmetric adjacency matrix.  Concretely, a given column $\bX_j$ of the
+data matrix is ``explained'' by the remaining columns $\bX_{\backslash
+  j}$ corresponding to the remaining variables: the set $\text{ne}(j)$
+of neighbors of variable~$j$ in the graph~$\graph$ is estimated by the
+support of the vector solving
+\begin{equation}
+  \label{eq:Lasso_MB}
+  \hatbbeta_j = \argmin_{\bbeta\in\Rset^{p-1}}     \frac{1}{2n}\left\|
+    \bX_j   -   \bX_{\backslash   j}   \bbeta
+  \right\|_{\ell_2}^2 + \lambda\ \|\bbeta\|_{\ell_1}.
+\end{equation}
+Indeed, if  each row of  $\bX$ is  drawn from a  multivariate Gaussian
+$\mathcal{N}(\bzr,\invcov^{-1})$, then  the best  linear approximation
+of $\bX_j$ by  $\bX_{\backslash j}$ is given by
+\begin{equation}
+  \label{eq:lincoef2invcov}
+  \bX_j = \sum_{k \in \text{ne(j)}} \beta_{jk} \bX_k = - \sum_{k \in \text{ne(j)}} \frac{\invcov_{jk}}{\invcov_{jj}} \bX_{k},
+\end{equation}
+thus  coefficients  $\bbeta_j$  and  column $\invcov_j$  --  once  its
+diagonal elements are  removed -- share the same  support. By support,
+we    mean   the    set    of    nonzero   coefficients.     Adjusting
+\eqref{eq:Lasso_MB} for each $j=1,\dots,p$ allow us to reconstruct the
+full graph $\graph$. Because the neighborhoods of the $p$ variable are
+selected separately, a  post symmetrization must be  applied to manage
+inconsistencies  between  edge selections;  \cite{2006_AS_Meinshausen}
+suggests AND or OR rules.
+
+Let us fill the gap with Criterion \eqref{eq:MLE_l1}. First, note that
+the  $p$  regression problem  can  be  rewritten  as a  unique  matrix
+problem, where $\bB$ contains $p$ vectors $\bbeta_j$,$j=1,\dots,p$:
+\begin{equation}
+  \label{eq:MB_pseudo}
+  \hat\bB^{\text{ns}}  = \argmin_{\bB\in\Rset^{p\times  p}, \diag(\bB)
+    =    \bzr_p}    \frac{1}{2}    \trace(\bB^\top\empcov    \bB)    -
+  \trace(\bB^\top\empcov) + \lambda \|\bB\|_{\ell_1}.
+\end{equation}
+In          fact,          it           can          be          shown
+\cite{2008_preprint_Rocha,2009_EJS_Chiquet,2010_AS_Ravikumar} that the
+optimization   problem   \eqref{eq:MB_pseudo}   corresponds   to   the
+minimization  of a  penalized, negative  \emph{pseudo}-likelihood: the
+joint distribution  of $X$ is approximated  by the product of  the $p$
+distributions of the $p$ variables conditional on the other ones, that
+is
+\begin{displaymath}
+  \log \prob(\mathbf{X};\invcov) = \sum_{j=1}^p \sum_{i=1}^n
+  \log \prob(X_j^i|X_{\backslash j}^i;\invcov_j).
+\end{displaymath}
+This  pseudo-likelihood  is based  upon  the  (false) assumption  that
+conditional  distributions are  independent.  Moreover,  all variables
+are assumed to share the  same variance in this formulation.  Building
+on   these   remarks,   \cite{2008_preprint_Rocha}   amend   criterion
+\eqref{eq:MB_pseudo}  by  the  adjunction of  an  additional  symmetry
+constraint,  and  introduce  additional   parameters  to  account  for
+different variances between the variables.
+
+Concerning the computational aspect,  this approach has very efficient
+implementation  as  it  basically  boils down  to  solving  $p$  Lasso
+problems. Suppose  for instance that  the target neighborhood  size is
+$k$ per variable:  fitting the whole solution path of  a Lasso problem
+using  the  Lars  algorithm  can  be  done  in  $\mathcal{O}(n  p  k)$
+complexity \cite{2012_FOT_bach}.   This must be multiplied  by $p$ for
+the whole network, yet we  underline that a parallel implementation is
+straightforward  in  this  case.    This  makes  this  approach  quite
+competitive,  especially when  coupled  with  additional bootstrap  or
+resampling techniques \cite{2010_JRSS_Meinshausen}.
+
+On the statistical  side, neighborhood selection has  been reported to
+be sometimes empirically more accurate in terms of edge detection than
+is the graphical-Lasso \cite{2008_SAGM_Villers,2008_preprint_Rocha} on
+certain types of data.  This  is somewhat supported by the statistical
+analysis  of  \cite{2011_EJS_Ravikumar},  who   show  that  under  the
+classical    irrepresentability     conditions    for     the    Lasso
+\cite{2006_JMLR_Zhao,2006_AS_Meinshausen}   and  for   an  appropriate
+choice  of   $\lambda$,  neighborhood  selection   achieves  selection
+consistency with high  probability when the sample size $n$  is of the
+order of  $\mathcal{O}(d\log(p))$ with $d$  the maximal degree  of the
+target   graph  $\graph$.    This   is  to   be   compared  with   the
+$\mathcal{O}(d^2\log(p))$ required by the graphical-Lasso (even if the
+corresponding  ``irrepresentability  conditions''   are  not  strictly
+comparable).   A   rough  explanation  for  this   difference  on  the
+asymptotic  is  that  the  graphical-Lasso  intends  to  estimate  the
+concentration matrix  on top of  selecting the nonzero  entries, while
+neighborhood selection focuses on the selection problem.
+
+\paragraph*{Constrained   $\ell_1$-minimization  for   inverse  matrix
+  estimation  (CLIME).}   The CLIME  estimator  has  been proposed  by
+\cite{2011_AS_Cai}   and  is   designed   to   avoid  the   cumbersome
+``irrepresentability conditions'' required for the Graphical-Lasso and
+the  neighborhood selection  approaches,  while providing  statistical
+guarantees on the support recovery.
+
+The definition  of CLIME  builds on  the remark  that the  solution to
+\eqref{eq:MLE_l1}  must verify  the following  first order  optimality
+condition -- or subgradient equations:
+\begin{equation*}
+  \left(\widehat{\invcov}^{\text{glasso}}\right)^{-1} - \empcov = \lambda
+  \ \bGamma, \quad \text{with }
+  \bGamma_{ij} \left\{\begin{array}{ll}
+      =    \sign(\widehat{\invcov}^{\text{glasso}}_{ij})    &   \text{    if    }
+    \widehat{\invcov}^{\text{glasso}}_{ij} \neq 0, \\
+    \in [-1,1] & \text{ otherwise}.\\
+  \end{array}\right.
+\end{equation*}
+This suggests the optimization problem
+\begin{equation*}
+  \minimize_{\invcov \in \mathcal{S}_{p}^+} \|\invcov\|_{\ell_1}, \quad \text{s.c.  }
+  \quad \|\invcov^{-1} - \empcov \|_\infty \leq \lambda,
+\end{equation*}
+which is too hard to solve. Removing the positive-definite requirement
+and multiplying the constraint by  $\invcov$, we encounter the problem
+solved by CLIME:
+\begin{equation}
+  \label{eq:clime}
+  \widehat{\invcov}_{\lambda}^{\text{clime}} = \argmin_{\invcov \in \mathcal{M}_{pp}} \|\invcov\|_{\ell_1}, \quad \text{s.c.  }
+  \quad \|\mathbf{I}_{p} - \invcov\empcov \|_\infty \leq \lambda.
+\end{equation}
+This estimator  is not necessarily  symmetric and a  post-treatment is
+required as  for neighborhood  selection.  But it  can also  be easily
+distributed  for  each  column  of  $\invcov_j$,  which  requires  the
+resolution of a linear program of complexity $\mathcal{O}(p^2k)$, with
+$k$ the  targeted number  of neighbors  per variable.This  is slightly
+more  demanding  than  neighborhood-selection  but  remains  extremely
+competitive.
+
+On  the  statistical  side,  the CLIME  estimator  achieves  selection
+consistency  at  a rate  comparable  to  that of  the  Graphical-Lasso
+\cite{2011_AS_Cai}, and is better  in its adaptive (weighted) version.
+Its  great  advantage   is  that  no  particular   assumption  like  a
+irrepresentability  condition --  which  can never  be established  in
+practice --  is required for  the data  matrix $\bX$.  This  method is
+distributed  via  the  \texttt{R}-package \textbf{fastclime},  and  an
+implementation \cite{NIPS2013_5037} is reported  to solve for problems
+with millions of features.
+
+\paragraph*{Sparse PArtial Correlation Estimation (SPACE).}
+In \cite{2009_JASA_Peng}, the gap  is completely filled between linear
+regression, Gaussian graphical model and neighborhood selection with a
+method  that directly  penalizes the  partial correlations  within the
+linear   model.     Indeed,   by   combining    firstly   Relationship
+\ref{eq:parcor2invcov}  between  the   partial  correlations  and  the
+concentration       matrix,      and       secondly,      Relationship
+\ref{eq:lincoef2invcov} between the  coefficients in linear regression
+and concentration matrix, one has
+\begin{equation*}
+  \bX_j = \sum_{k \in \text{ne(j)}} \beta_{jk} \bX_k + \varepsilon = \sum_{k \in
+    \text{ne(j)}} \rho_{jk} \sqrt{\frac{\invcov_{kk}}{\invcov_{jj}}} \bX_{k} + \varepsilon,
+\end{equation*}
+which suggests the following optimization problem
+\begin{equation}
+  \label{eq:space}
+  \left(\widehat{\brho}_\lambda^{\text{space}}, \diag(\invcov)\right) =
+  \argmin_{\brho\in\Rset{p(p-1)},\diag(\invcov)} \frac{1}{2}
+  \sum_{j=1}^p \omega_j \left\|
+    \bX_j - \sum_{k=1}^p \rho_{jk} \sqrt{\frac{\invcov_{kk}}{\invcov_{jj}}}
+    \bX_k \right\|_{\ell_2}^2 + \lambda\ \| \brho \|_{\ell_1},
+\end{equation}
+where  $\brho$  is  a  vector  containing  all  the  pairwise  partial
+correlations,  $\diag(\invcov)$  contains  the  diagonal  elements  of
+$\invcov$,  that  is  to  say,  the partial  covariances  of  all  the
+variables, and finally $\omega_j$ are some positive (given) weights.
+
+Although the  optimization of \eqref{eq:space} is  more demanding than
+is  neighborhood   selection,  the   problem  is  jointly   convex  in
+$(\diag(\bTheta),\brho)$. When $\diag(\bTheta)$  is fixed, the problem
+has  the  same complexity  as  does  neighborhood selection,  and  the
+authors claim that  only a couple of iterations  alternating over each
+of  the   two  parameters  $(\diag(\bTheta),\brho)$  are   needed  for
+convergence.   It  thus   remains  a  lot  more   efficient  than  the
+graphical-Lasso.   On top  of that,  the method  intrinsically imposes
+symmetry over the  partial correlations $\brho$.  In  short, it embeds
+the computational advantage of neighborhood selection while estimating
+the conditional variance  as in the graphical-Lasso.   It is available
+in  the \texttt{R}-package  \textbf{space}.   Further refinements  and
+statistical    analyses    have     been    recently    proposed    in
+\cite{khare2014convex}.
+
+\paragraph*{Model  selection  issues.}   Up  to this  point,  we  have
+completely avoided the fundamental model selection issue, that is, the
+choice of the tuning parameter $\lambda$,  which is at play in all the
+sparse methods mentioned  thus far.  The first possibility  is to rely
+on information criteria of the form
+\begin{equation*}
+  \textrm{IC}_\lambda = - 2 \textrm{loglik}(\widehat{\invcov}_\lambda;\bX) + \pen(\df(\widehat{\invcov}_\lambda)),
+\end{equation*}
+where  ``$\pen$''  is  a  function penalizing  the  model  complexity,
+described by $\df$,  the degrees of freedom of  the current estimator.
+We meet the AIC  by choosing $\pen(x) = 2 x $ and  the BIC by choosing
+$\pen(x)  =  \log(n)  x$.   However,   AIC  and  BIC  are  based  upon
+assumptions  which are  not suited  to high-dimensional  settings (see
+\cite{2012_SS_Giraud}).  Moreover,  the notion  of degrees  of freedom
+for sparse methods has to be specified, not to mention that one has to
+adapt these criteria  to the case of GGMs.  An  example of a criterion
+meeting  these  prerequisites is  the  extended  BIC for  sparse  GGMs
+\cite{foygel2010extended}:
+\begin{equation}
+  \label{eq:EBIC_ggm}
+  \text{EBIC}_\gamma(\widehat{\invcov}_\lambda)  =   -2 \textrm{loglik}
+  (\widehat{\invcov}_\lambda;\bX) + |\mathcal{E}_\lambda| (\log(n) + 4 \gamma \log(p) ),
+\end{equation}
+where the function $\df$ is equal to $|\mathcal{E}|$, the total number
+of edges  in the  inferred graph. The  parameter $\gamma\in  [0,1]$ is
+used  to  adjust the  tendency  of  the  usual  BIC --  recovered  for
+$\gamma=0$ --  to choose overly  dense graphs in  the high-dimensional
+setting.      Further     justification     can    be     found     in
+\cite{foygel2010extended}. A competing approach, designed to compare a
+family  of GGM  -- possibly  inferred  with different  methods --,  is
+GGMSelect \cite{2012_SAGMB_Giraud,giraud2008estimation}.
+
+Another possibility is to rely on resampling/subsampling procedures to
+select a  set of  edges which  are robust to  small variations  of the
+sample.  The  most popular approach is  the \emph{Stability Selection}
+procedure  proposed in  \cite{2010_JRSS_Meinshausen}, also  related to
+the  bootstrapped  procedure  of  \cite{bach2008bolasso}.   A  similar
+approach,   called  StaRS   (Stability   approach  to   Regularization
+Selection)  is  developed  specifically  in  the  context  of  GGM  in
+\cite{liu2010stability}. The  basic idea  is as  follows: for  a given
+range       of       the        tuning       parameter       $\Lambda=
+[\lambda_{\textrm{min}},\lambda_{\textrm{max}}]$,  the same  method is
+fitted on many subsamples (with or without replacement) with size, say
+$n/2$. The idea is then to construct a score indexed on $\Lambda$ that
+measures stability -- or instability -- of the selected variables. The
+selected  edges  are those  matching  a  given  score, for  which  the
+probability  of  false  discovery  is controlled.   This  requires  an
+additional  threshold in  place  of  a choice  of  $\lambda$, but  the
+authors  in  \cite{2010_JRSS_Meinshausen,liu2010stability} claim  that
+such a threshold  is typically much less sensitive than  is the tuning
+parameter $\lambda$.  An application  of such resampling techniques to
+the inference of biological networks  has been pursued with success in
+\cite{haury2012tigress}, advocating  for the use of  stability methods
+on real problems.
+
+A  final  possibility ---  that  remains  somewhat confidential  while
+writing these lines --- is to rely on sparse procedures which are less
+sensitive to $\lambda$: among these,  we may cite the ``scaled-Lasso''
+\cite{sun2012scaled} for linear regression,  adapted to the context of
+network   inference  in   a  neighborhood-selection-like   fashion  in
+\cite{sun2013sparse}.
+
+\paragraph*{Extensions towards  non Gaussian settings.}   As hopefully
+illustrated throughout this  section, sparse GGM is a  mature and well
+controlled framework, with solid contributions both on the statistical
+and  the  computational sides.   There  is  also expanding  innovative
+literature tending to broaden the applicability of GGMs, especially to
+overcome the  Gaussian assumption.  Indeed, particularly  in genomics,
+there is a growing interest  for the multivariate modeling of discrete
+random vectors, as  sequencing techniques provide us  with count data.
+In this perspective, some attempts were  made for a Poisson version of
+the  above  techniques:  in   \cite{allen2012log}  for  instance,  the
+neighborhood selection  approach is  extended to a  sparse generalized
+linear model setup; still, interpretability of the inferred network is
+questionable, as a null partial  correlation does not mean conditional
+dependency   in   the   non-Gaussian   case.   In   a   recent   paper
+\cite{yang2013poisson}, a review of  existing Poisson graphical models
+is  provided,  where the  notion  of  conditional dependency  is  more
+carefully specified.
+
+Finally, there is much interest  for pretreatment methods which change
+the   original   data  into   more   ``Gaussian''   data  via   simple
+transformations.   Hence,   we  can   still  take  advantage   of  the
+well-controlled  sparse GGM  framework.   A successful  work based  on
+Gaussian  copulas  is  the  nonparanormal  distribution  developed  in
+\cite{liu2009nonparanormal}.    It    is   implemented    within   the
+\texttt{R}-package  \textbf{huge}, at  a negligible  cost compared  to
+that of the inference process itself.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master:  "../hdr_main.tex"
+%%% mode: flyspell
+%%% TeX-PDF-mode: t
+%%% ispell-local-dictionary: "american"
+%%% End:
