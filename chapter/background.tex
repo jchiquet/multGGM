@@ -1,24 +1,14 @@
 \section{Background}
 \label{sec:chap2:background}
 
-Gaussian              Graphical             Models              (GGMs)
-\cite{1996_Book_Lauritzen,whittaker1990graphical}    are     a    very
-convenient tool  for describing the  patterns at play in  complex data
-sets.  Indeed, through the notion of partial correlation, they provide
-a  well-studied framework  for spotting  direct relationships  between
-variables, and thus  reveal the latent structure in a  way that can be
-easily interpreted. Application  areas are very broad  and include for
-instance  gene regulatory  network  inference in  biology (using  gene
-expression data) as well  as spectroscopy, climate studies, functional
-magnetic  resonance imaging,  etc.  Estimation  of GGMs  in a  sparse,
-high-dimensional setting  has thus  received much  attention recently.
-This section provides an overview of this hot and competitive research
-field of statistical learning.  I mainly focus on the state-of-the-art
-$\ell_1$-regularization  methods   and  their  most   recent  striking
-variants, insisting on their computational and statistical properties.
-This provides the  reader with the necessary material  to approach the
-second section of this chapter  dedicated to my personal contributions
-to this field.
+\todo[inline]{We should probably shorten this section}
+
+This section provides an overview on the state-of-the-art
+$\ell_1$-regularization methods for sparse GGM inference and their
+most recent striking variants, insisting on their computational and
+statistical properties.  This provides the reader with the necessary
+material to approach the model at play in this chapter, dedicated to
+multiattribute GGM.
 
 \subsection{Basics on Gaussian graphical models}
 \label{sec:chap2:background:ggm}
@@ -112,37 +102,35 @@ set  of edges  in  the graph  is  treated as  a  question of  variable
 selection.
 
 \paragraph*{High-dimensional inference of GGM.}  The different methods
-for the  inference of  sparse GGMs  in high-dimensional  settings fall
-into roughly  three categories.   The first  contains constraint-based
-methods,            performing            statistical            tests
+for the inference of sparse GGMs in high-dimensional settings fall
+into roughly three categories.  The first contains constraint-based
+methods, performing statistical tests
 \cite{2006_JMLR_Castelo,2007_SS_drton,2008_JSPI_drton,2011_BMC_Kiiveri,2006_SAGMB_Wille}.
-However, they  either suffer  from the excessive  computational burden
-\cite{2006_JMLR_Castelo,2006_SAGMB_Wille}   or    strong   assumptions
-\cite{2007_SS_drton,2008_JSPI_drton} that correspond  to regimes never
-attained  in  real situations.   The  second  of these  categories  is
-composed     of    Bayesian     approaches,    see     for    instance
+However, they either suffer from the excessive computational burden
+\cite{2006_JMLR_Castelo,2006_SAGMB_Wille} or strong assumptions
+\cite{2007_SS_drton,2008_JSPI_drton} that correspond to regimes never
+attained in real situations.  The second of these categories is
+composed of Bayesian approaches, see for instance
 \cite{2004_JMVA_Dobra,2005_SS_Dobra,rau2012reverse,schwaller2015tree}.
-However, constructing priors  on the set of  concentration matrices is
-not a trivial task and the use  of MCMC procedures limits the range of
-applications to moderate-sized networks.   The third category contains
-regularized estimators, which add a  penalty term to the likelihood in
-order to reduce the complexity or  degrees of freedom of the estimator
-and more generally regularize the  problem: throughout this chapter, I
-focus  on  methods   of  this  kind.   More  precisely,   I  focus  on
-$\ell_1$-regularized  procedures,  which  are   freed  from  any  test
-procedure -- and  thus multiple testing issues --  since they directly
-perform  estimation and  selection of  the most  significant edges  by
-zeroing entries in the estimator  of $\invcov$.  The remainder of this
-section is dedicated to a quick review of the state-of-the-art methods
-of this kind.
+However, constructing priors on the set of concentration matrices is
+not a trivial task and the use of MCMC procedures limits the range of
+applications to moderate-sized networks.  The third category contains
+regularized estimators, which add a penalty term to the likelihood in
+order to reduce the complexity or degrees of freedom of the estimator
+and more generally regularize the problem: throughout this chapter we
+focus on $\ell_1$-regularized procedures, which are freed from any
+test procedure -- and thus multiple testing issues -- since they
+directly perform estimation and selection of the most significant
+edges by zeroing entries in the estimator of $\invcov$.  The remainder
+of this section is dedicated to a quick review of the state-of-the-art
+methods of this kind.
 
 \subsection{Sparse methods for GGM inference}
 \label{sec:sparseGGM}
 
-The idea  underlying sparse  methods for  GGM is the  same as  for the
-Lasso   in   linear  regression   (see   Example~\ref{ex:lin_reg_sel},
-Section~\ref{sec:recent_stat:strategy}): it basically uses 
-$\ell_1$-regularization  as  a  convex  surrogate  of  the  ideal  but
+The idea underlying sparse methods for GGM is the same as for the
+Lasso in linear regression \citep{1996_JRSS_Tibshirani}: it basically
+uses $\ell_1$-regularization as a convex surrogate of the ideal but
 computationally intensive $\ell_0$-regularized problem:
 \begin{equation}
   \argmax_{\invcov  \in \mathcal{S}_p^+}\quad
@@ -336,56 +324,6 @@ comparable).   A   rough  explanation  for  this   difference  on  the
 asymptotic  is  that  the  graphical-Lasso  intends  to  estimate  the
 concentration matrix  on top of  selecting the nonzero  entries, while
 neighborhood selection focuses on the selection problem.
-
-\paragraph*{Constrained   $\ell_1$-minimization  for   inverse  matrix
-  estimation  (CLIME).}   The CLIME  estimator  has  been proposed  by
-\cite{2011_AS_Cai}   and  is   designed   to   avoid  the   cumbersome
-``irrepresentability conditions'' required for the Graphical-Lasso and
-the  neighborhood selection  approaches,  while providing  statistical
-guarantees on the support recovery.
-
-The definition  of CLIME  builds on  the remark  that the  solution to
-\eqref{eq:MLE_l1}  must verify  the following  first order  optimality
-condition -- or subgradient equations:
-\begin{equation*}
-  \left(\widehat{\invcov}^{\text{glasso}}\right)^{-1} - \empcov = \lambda
-  \ \bGamma, \quad \text{with }
-  \bGamma_{ij} \left\{\begin{array}{ll}
-      =    \sign(\widehat{\invcov}^{\text{glasso}}_{ij})    &   \text{    if    }
-    \widehat{\invcov}^{\text{glasso}}_{ij} \neq 0, \\
-    \in [-1,1] & \text{ otherwise}.\\
-  \end{array}\right.
-\end{equation*}
-This suggests the optimization problem
-\begin{equation*}
-  \minimize_{\invcov \in \mathcal{S}_{p}^+} \|\invcov\|_{\ell_1}, \quad \text{s.c.  }
-  \quad \|\invcov^{-1} - \empcov \|_\infty \leq \lambda,
-\end{equation*}
-which is too hard to solve. Removing the positive-definite requirement
-and multiplying the constraint by  $\invcov$, we encounter the problem
-solved by CLIME:
-\begin{equation}
-  \label{eq:clime}
-  \widehat{\invcov}_{\lambda}^{\text{clime}} = \argmin_{\invcov \in \mathcal{M}_{pp}} \|\invcov\|_{\ell_1}, \quad \text{s.c.  }
-  \quad \|\mathbf{I}_{p} - \invcov\empcov \|_\infty \leq \lambda.
-\end{equation}
-This estimator  is not necessarily  symmetric and a  post-treatment is
-required as  for neighborhood  selection.  But it  can also  be easily
-distributed  for  each  column  of  $\invcov_j$,  which  requires  the
-resolution of a linear program of complexity $\mathcal{O}(p^2k)$, with
-$k$ the  targeted number  of neighbors  per variable.This  is slightly
-more  demanding  than  neighborhood-selection  but  remains  extremely
-competitive.
-
-On  the  statistical  side,  the CLIME  estimator  achieves  selection
-consistency  at  a rate  comparable  to  that of  the  Graphical-Lasso
-\cite{2011_AS_Cai}, and is better  in its adaptive (weighted) version.
-Its  great  advantage   is  that  no  particular   assumption  like  a
-irrepresentability  condition --  which  can never  be established  in
-practice --  is required for  the data  matrix $\bX$.  This  method is
-distributed  via  the  \texttt{R}-package \textbf{fastclime},  and  an
-implementation \cite{NIPS2013_5037} is reported  to solve for problems
-with millions of features.
 
 \paragraph*{Sparse PArtial Correlation Estimation (SPACE).}
 In \cite{2009_JASA_Peng}, the gap  is completely filled between linear
