@@ -1,6 +1,6 @@
 \newcommand\mytexttt[1]{\texttt{\small #1}}
 \newcommand{\trace}{\mathrm{Tr}}
-\newcommand{\I}{\mathbf{1}}
+\newcommand{\Ind}{\mathbf{1}}
 \newcommand{\bI}{\mathbf{I}}
 \newcommand{\be}{\mathbf{e}}
 \newcommand{\bu}{\mathbf{u}}
@@ -67,14 +67,14 @@
 \newcommand{\signs}{\mathrm{signs}}
 \newcommand{\cov}{\mathrm{Cov}}
 \newcommand{\var}{\mathrm{Var}}
-\newcommand{\E}{\mathbb{E}}
+\newcommand{\Esp}{\mathbb{E}}
 \newcommand{\diag}{\mathrm{diag}}
 \renewcommand{\vec}{\mathrm{vec}}
 \newcommand{\weights}{\mathbf{w}}
 \newcommand{\supp}{\mathcal{A}}
 \newcommand{\graph}{\mathcal{G}}
 \newcommand{\group}{\mathcal{G}}
-\newcommand{\prob}{\mathbb{P}}
+\renewcommand{\prob}{\mathbb{P}}
 \newcommand{\hatbeta}{\hat{\beta}}
 \newcommand{\hatbbeta}{\,\hat{\!\bbeta}}
 \newcommand{\hatbetalasso}{\,\hat{\!\beta}^{\mathrm{lasso}}}
@@ -172,3 +172,7 @@
     \label{fig:#2}
   \end{figure}
 }
+
+\newcommand{\notindep}{\centernot{\indep}}
+\newcommand{\bdot}{\boldsymbol\cdot}
+\newcommand*{\transp}[2][-3mu]{\ensuremath{\mskip1mu\prescript{\smash{\mathrm t\mkern#1}}{}{\mathstrut#2}}}

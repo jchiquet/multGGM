@@ -228,18 +228,18 @@ the  same block-wise  decomposition as  $\bSigma$ or  $\bTheta$.  This
 paves  the way  for  an optimization  algorithm like  block-coordinate
 descent which we implemented, although we omit details here.
 
-At the time we were working on this model, another idea that we had in
-mind --- although we  did not push too far --- was  to propose a penalty
-based  upon the  nuclear norm  $\|\bA\|_\star =  \sum_j \nu_j$,  where
-$(\nu_1, \dots,\nu_p)$ is the vector of singular values of $\bA$. This
-somewhat penalizes the rank of a  matrix, which would be desirable for
-matrix $\bTheta_{ij}$ when many attributes are shared between $(i,j)$.
-We thus might define a penalty  on $\invcov$ in place of $\bB_j$, with
-something like
-\begin{equation}
-  \label{eq:penalty_rank_variate}
-  \Omega_1(\mathbf{B}_j)  =   \sum_{i  \in   \mathcal{P}\backslash  j}
-  \|\invcov_{ij} \|_\star.
-\end{equation}
-However, this idea remains only at the feasible stage for now.
+% At the time we were working on this model, another idea that we had in
+% mind --- although we  did not push too far --- was  to propose a penalty
+% based  upon the  nuclear norm  $\|\bA\|_\star =  \sum_j \nu_j$,  where
+% $(\nu_1, \dots,\nu_p)$ is the vector of singular values of $\bA$. This
+% somewhat penalizes the rank of a  matrix, which would be desirable for
+% matrix $\bTheta_{ij}$ when many attributes are shared between $(i,j)$.
+% We thus might define a penalty  on $\invcov$ in place of $\bB_j$, with
+% something like
+% \begin{equation}
+%   \label{eq:penalty_rank_variate}
+%   \Omega_1(\mathbf{B}_j)  =   \sum_{i  \in   \mathcal{P}\backslash  j}
+%   \|\invcov_{ij} \|_\star.
+% \end{equation}
+% However, this idea remains only at the feasible stage for now.
 

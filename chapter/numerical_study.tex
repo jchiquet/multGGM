@@ -8,7 +8,8 @@ simulations are set up as follows:
   Erdös-Renyi model;
 \item  Expand the  associated adjacency  matrix to  multivariate space
   with
-$$\mathbf{A}=(\mathbf{A} +I) \otimes \mathbb{I}_{K\times K};$$
+  $$\mathbf{A}=(\mathbf{A} + I) \otimes \mathbb{I}_{K\times K};$$
+  where $\otime$ is the Kronecker product.
 \item Compute $\bTheta$ a positive definite approximation of
   $\mathbf{A}$ by replacing null and negative eigenvalues by a small constant;
 \item Control the difficulty of  the problem with $\gamma>0$ such that
@@ -26,19 +27,12 @@ Figure  \ref{fig:simu_multi}, it  is clear  that aggregation  improves
 upon single-attribute methods.
 \begin{figure}[htbp!]
   \centering
-  \begin{subfigure}[t]{.495\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{figures/res_simu_K=2}
-    \caption{$K = 2$}
-    \label{fig:simu_multi_k=2}
-  \end{subfigure}
-  \begin{subfigure}[t]{.495\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{figures/res_simu_K=4}
-    \caption{$K = 4$}
-    
-    \label{fig:simu_multi_k=4}
-  \end{subfigure}
+  \begin{tabular}{cc}
+    \includegraphics[width=.495\textwidth]{figures/res_simu_K=2} &
+    \includegraphics[width=.495\textwidth]{figures/res_simu_K=4} \\[1ex]
+    $K = 2$ & $K = 4$\\ 
+  \end{tabular}
+
   \caption{Simple  simulation study  for  the multi-attribute  network
     inference problem:  the multivariate  procedure improves  over the
     univariate procedures in every  situation when networks are close

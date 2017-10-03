@@ -1,33 +1,34 @@
-\documentclass[a4paper]{article}
+\documentclass[graybox]{svmult}
 
-\usepackage{amsmath,amssymb,amsthm}
+% choose options for [] as required from the list
+% in the Reference Guide
+
+\usepackage{mathptmx}       % selects Times Roman as basic font
+\usepackage{helvet}         % selects Helvetica as sans-serif font
+\usepackage{courier}        % selects Courier as typewriter font
+\usepackage{type1cm}        % activate if the above 3 fonts are
+                            % not available on your system
+\usepackage{makeidx}         % allows index generation
+\usepackage{multicol}        % used for the two-column index
+\usepackage[bottom]{footmisc}% places footnotes at page bottom
+
+%% personal packages
+\usepackage{amsmath,amssymb}
 \usepackage{xcolor}
 \usepackage{natbib}
 \usepackage{enumerate}
 \usepackage{macros}
+
 \usepackage{centernot}
 \usepackage[textwidth=8em,textsize=small]{todonotes}
-
 \usepackage[ruled,vlined]{algorithm2e}
-% Gestion des référence selon le format de sortie
-% configuration de graphicx et hyperref pour sortie PDF
 \usepackage{graphicx}
-\usepackage{subcaption}
 
 \usepackage{tikz}
 \usetikzlibrary{calc,shapes,backgrounds,arrows,automata,shadows,positioning}
 \usepackage{multirow}
 \definecolor{mblue}{RGB}{94,135,173}
 \colorlet{mred}{red!80!black}
-
-\newtheorem*{remark}{Remark}
-% \newtheorem{proposition}{Proposition}
-% \newtheorem{corollary}{Corollary}
-\makeatletter
-\newcommand{\notindep}{\centernot{\indep}}
-\newcommand{\bdot}{\boldsymbol\cdot}
-\newcommand*{\transp}[2][-3mu]{\ensuremath{\mskip1mu\prescript{\smash{\mathrm t\mkern#1}}{}{\mathstrut#2}}}%
-\makeatother
 
 \graphicspath{{./figures/}}
 
@@ -75,7 +76,7 @@ network reconstruction more robust.
 
 \input{applications}
 
-\bibliographystyle{plainnat}
+\bibliographystyle{spbasic}
 \bibliography{biblio}
 
 \end{document}
