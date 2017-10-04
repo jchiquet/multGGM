@@ -1,8 +1,6 @@
 rm(list=ls())
 library(R.utils)
 library(mvtnorm)
-source("header.R")
-header("~/svn/quadrupen")
 source("functions_multivar.R")
 
 ## fixed coefficients
