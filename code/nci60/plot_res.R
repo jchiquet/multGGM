@@ -1,45 +1,40 @@
 rm(list=ls())
-library(ggplot2)
-library(reshape2)
+library(tidyverse)
+library(viridis)
 
-load(file="res_desc.RData")
+load(file="nci60_prot+expr-2017-10-05.RData")
 
-nedges.univar1 <- sapply(nets.univar1, function(x) sum(x!=0))
-nedges.univar2 <- sapply(nets.univar2, function(x) sum(x!=0))
-nedges.bivar   <- sapply(nets.bivar, function(x) sum(x!=0))
-
-nedges <- 50
-
-net1 <- nets.univar1[[match(TRUE, nedges.univar1 >= 2*nedges)]]
-net2 <- nets.univar2[[match(TRUE, nedges.univar2 >= 2*nedges)]]
-mnet <- nets.bivar[[match(TRUE, nedges.bivar >= 2*nedges)]]
+image(protNet.1se$networks[[1]])
+image(exprNet.1se$networks[[1]])
+image(bivarNet.1se$networks[[1]])
 
 
-data <- rbind(melt(net1), melt(net2), melt(net1 | net2), melt(net1 & net2),
-              melt(mnet))
-data$net <- rep(c("net1","net2","net1 | net2","net2 & net2","mnet"), each=91*91)
+nedges.prot <- sapply(protNet.all$networks, sum)
+nedges.expr <- sapply(exprNet.all$networks, sum)
+nedges.mult <- sapply(bivarNet.all$networks, sum)
 
-d <- ggplot(data, aes(x=Var1, y=Var2, fill=value)) + geom_tile()
-d+facet_grid(.~net)
+max.edges <- 1500
+J12 <-vector("numeric", max.edges)
+J13 <-vector("numeric", max.edges)
+J23 <-vector("numeric", max.edges)
+for (nedges in 1:max.edges) {
+  prot <- which(protNet.all$networks[[match(TRUE, nedges.prot >= 2*nedges)]] !=0)
+  expr <- which(exprNet.all$networks[[match(TRUE, nedges.expr >= 2*nedges)]] !=0)
+  mult <- which(bivarNet.all$networks[[match(TRUE, nedges.mult >= 2*nedges)]] !=0)
 
-J12 <- c()
-J13 <- c()
-J23 <- c()
+  J12[nedges] <- length(intersect(prot,expr)) / length(union(prot,expr))
 
-for (nedges in 1:500) {
-  net1 <- which(nets.univar1[[match(TRUE, nedges.univar1 >= 2*nedges)]] !=0)
-  net2 <- which(nets.univar2[[match(TRUE, nedges.univar2 >= 2*nedges)]] !=0)
-  mnet <- which(nets.bivar[[match(TRUE, nedges.bivar >= 2*nedges)]] !=0)
+  J13[nedges] <- length(intersect(prot,mult)) / length(union(prot,mult))
 
-  J12[nedges] <- length(intersect(net1,net2)) / length(union(net1,net2))
-  
-  J13[nedges] <- length(intersect(net1,mnet)) / length(union(net1,mnet))
+  J23[nedges] <- length(intersect(expr,mult)) / length(union(expr,mult))
 
-  J23[nedges] <- length(intersect(net2,mnet)) / length(union(net2,mnet))
-  
 }
 
-plot(J12, type="l", ylim=c(0,0.5))
-lines(J13)
-lines(J23)
+dp <- data.frame(jaccard = c(J12, J13, J23),
+           couple = rep(c("protein/expr.","protein/expr+protein","expr/expr+protein"), each=max.edges),
+           edges = rep(1:max.edges, 3))
+p <- ggplot(dp, aes(x=edges, y=jaccard, group=couple, colour=couple)) + geom_line() +
+  theme_bw(base_size = 20) + scale_color_viridis(discrete=TRUE) + ylim(0.,0.4)
+ggsave(plot = p, filename = "../../chapter/figures/net_jaccard.pdf", width=10, height=7)
+
 

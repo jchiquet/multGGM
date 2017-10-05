@@ -16,6 +16,7 @@
 #'
 #' @importFrom parallel mclapply
 #' @importFrom pbmcapply pbmclapply
+#' @import Matrix
 #' @import glmnet
 #' @import gglasso
 #' @export

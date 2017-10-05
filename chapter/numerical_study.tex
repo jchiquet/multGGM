@@ -9,7 +9,7 @@ simulations are set up as follows:
 \item  Expand the  associated adjacency  matrix to  multivariate space
   with
   $$\mathbf{A}=(\mathbf{A} + I) \otimes \mathbb{I}_{K\times K};$$
-  where $\otime$ is the Kronecker product.
+  where $\otimes$ is the Kronecker product.
 \item Compute $\bTheta$ a positive definite approximation of
   $\mathbf{A}$ by replacing null and negative eigenvalues by a small constant;
 \item Control the difficulty of  the problem with $\gamma>0$ such that
@@ -37,5 +37,13 @@ upon single-attribute methods.
     inference problem:  the multivariate  procedure improves  over the
     univariate procedures in every  situation when networks are close
     for each attribute.}
+  \label{fig:simu_multi}
+\end{figure}
+
+\begin{figure}[htbp!]
+  \centering
+  \includegraphics[width=\textwidth]{figures/res_simu_new}
+
+  \caption{New simu... discuss this}
   \label{fig:simu_multi}
 \end{figure}
