@@ -7,10 +7,15 @@ working_directory <-
 setwd(working_directory)
 
 library(multivarNetwork)
+load("RPPA_EXPR_RATHER_ILC.RData")
 
-rppa <- read.table('RPPA_RATHER_ILC.csv', sep=",")
-expr <- read.table('expr_data_processed.csv', sep="\t")
-mc.cores <- 10
+prot <- as.matrix(RPPA)
+expr <- t(EXPR)
+
+# length(unique(colnames(rppa)))
+# length(unique(colnames(expr)))
+
+mc.cores <- 4
 
 cat("\nMULTIVARIATE INFERENCE")
 cat("\ncurrent variable is")
@@ -32,5 +37,5 @@ protNet.all <- multivarNetwork(prot, mc.core=mc.cores, nlambda=1000)
 
 save(protNet.min, protNet.1se, protNet.all,
      exprNet.min, exprNet.1se, exprNet.all,
-     bivarNet.min, bivarNet.1se, bivarNet.all,  file=paste0("nci60_prot+expr-",Sys.Date(),".RData") )
+     bivarNet.min, bivarNet.1se, bivarNet.all,  file=paste0("RATHER_prot+expr-",Sys.Date(),".RData") )
 
