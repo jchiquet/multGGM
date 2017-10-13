@@ -1,8 +1,6 @@
 \section{Background}
 \label{sec:chap2:background}
 
-\todo[inline]{We should probably shorten this section}
-
 This section provides an overview on the state-of-the-art
 $\ell_1$-regularization methods for sparse GGM inference and their
 most recent striking variants, insisting on their computational and
@@ -209,8 +207,8 @@ advantage  of the  problem sparsity  by decomposing  \eqref{eq:MLE_l1}
 into block diagonal problems depending on $\lambda$: this considerably
 reduces the computational burden  in practice.  Implementations of the
 graphical-Lasso  algorithm are  available  in the  \texttt{R}-packages
-\textbf{glasso},     \textbf{huge}    \cite{2014_huge_package},     or
-\textbf{simone} \cite{simone,2009_BI_Chiquet}. The most recent notable
+\textbf{glasso},     \textbf{huge}    \citep{2014_huge_package},     or
+\textbf{simone} \citep{2009_BI_Chiquet}. The most recent notable
 efforts related  to the optimization  of \eqref{eq:MLE_l1} are  due to
 \cite{hsieh2014quic,NIPS2013_4923}  and  the   QUIC  (then  BIG\&QUIC)
 algorithm, a quadratic approximation which allows \eqref{eq:MLE_l1} to
@@ -325,47 +323,47 @@ asymptotic  is  that  the  graphical-Lasso  intends  to  estimate  the
 concentration matrix  on top of  selecting the nonzero  entries, while
 neighborhood selection focuses on the selection problem.
 
-\paragraph*{Sparse PArtial Correlation Estimation (SPACE).}
-In \cite{2009_JASA_Peng}, the gap  is completely filled between linear
-regression, Gaussian graphical model and neighborhood selection with a
-method  that directly  penalizes the  partial correlations  within the
-linear   model.     Indeed,   by   combining    firstly   Relationship
-\ref{eq:parcor2invcov}  between  the   partial  correlations  and  the
-concentration       matrix,      and       secondly,      Relationship
-\ref{eq:lincoef2invcov} between the  coefficients in linear regression
-and concentration matrix, one has
-\begin{equation*}
-  \bX_j = \sum_{k \in \text{ne(j)}} \beta_{jk} \bX_k + \varepsilon = \sum_{k \in
-    \text{ne(j)}} \rho_{jk} \sqrt{\frac{\invcov_{kk}}{\invcov_{jj}}} \bX_{k} + \varepsilon,
-\end{equation*}
-which suggests the following optimization problem
-\begin{equation}
-  \label{eq:space}
-  \left(\widehat{\brho}_\lambda^{\text{space}}, \diag(\invcov)\right) =
-  \argmin_{\brho\in\Rset{p(p-1)},\diag(\invcov)} \frac{1}{2}
-  \sum_{j=1}^p \omega_j \left\|
-    \bX_j - \sum_{k=1}^p \rho_{jk} \sqrt{\frac{\invcov_{kk}}{\invcov_{jj}}}
-    \bX_k \right\|_{\ell_2}^2 + \lambda\ \| \brho \|_{\ell_1},
-\end{equation}
-where  $\brho$  is  a  vector  containing  all  the  pairwise  partial
-correlations,  $\diag(\invcov)$  contains  the  diagonal  elements  of
-$\invcov$,  that  is  to  say,  the partial  covariances  of  all  the
-variables, and finally $\omega_j$ are some positive (given) weights.
+% \paragraph*{Sparse PArtial Correlation Estimation (SPACE).}
+% In \cite{2009_JASA_Peng}, the gap  is completely filled between linear
+% regression, Gaussian graphical model and neighborhood selection with a
+% method  that directly  penalizes the  partial correlations  within the
+% linear   model.     Indeed,   by   combining    firstly   Relationship
+% \ref{eq:parcor2invcov}  between  the   partial  correlations  and  the
+% concentration       matrix,      and       secondly,      Relationship
+% \ref{eq:lincoef2invcov} between the  coefficients in linear regression
+% and concentration matrix, one has
+% \begin{equation*}
+%   \bX_j = \sum_{k \in \text{ne(j)}} \beta_{jk} \bX_k + \varepsilon = \sum_{k \in
+%     \text{ne(j)}} \rho_{jk} \sqrt{\frac{\invcov_{kk}}{\invcov_{jj}}} \bX_{k} + \varepsilon,
+% \end{equation*}
+% which suggests the following optimization problem
+% \begin{equation}
+%   \label{eq:space}
+%   \left(\widehat{\brho}_\lambda^{\text{space}}, \diag(\invcov)\right) =
+%   \argmin_{\brho\in\Rset{p(p-1)},\diag(\invcov)} \frac{1}{2}
+%   \sum_{j=1}^p \omega_j \left\|
+%     \bX_j - \sum_{k=1}^p \rho_{jk} \sqrt{\frac{\invcov_{kk}}{\invcov_{jj}}}
+%     \bX_k \right\|_{\ell_2}^2 + \lambda\ \| \brho \|_{\ell_1},
+% \end{equation}
+% where  $\brho$  is  a  vector  containing  all  the  pairwise  partial
+% correlations,  $\diag(\invcov)$  contains  the  diagonal  elements  of
+% $\invcov$,  that  is  to  say,  the partial  covariances  of  all  the
+% variables, and finally $\omega_j$ are some positive (given) weights.
 
-Although the  optimization of \eqref{eq:space} is  more demanding than
-is  neighborhood   selection,  the   problem  is  jointly   convex  in
-$(\diag(\bTheta),\brho)$. When $\diag(\bTheta)$  is fixed, the problem
-has  the  same complexity  as  does  neighborhood selection,  and  the
-authors claim that  only a couple of iterations  alternating over each
-of  the   two  parameters  $(\diag(\bTheta),\brho)$  are   needed  for
-convergence.   It  thus   remains  a  lot  more   efficient  than  the
-graphical-Lasso.   On top  of that,  the method  intrinsically imposes
-symmetry over the  partial correlations $\brho$.  In  short, it embeds
-the computational advantage of neighborhood selection while estimating
-the conditional variance  as in the graphical-Lasso.   It is available
-in  the \texttt{R}-package  \textbf{space}.   Further refinements  and
-statistical    analyses    have     been    recently    proposed    in
-\cite{khare2014convex}.
+% Although the  optimization of \eqref{eq:space} is  more demanding than
+% is  neighborhood   selection,  the   problem  is  jointly   convex  in
+% $(\diag(\bTheta),\brho)$. When $\diag(\bTheta)$  is fixed, the problem
+% has  the  same complexity  as  does  neighborhood selection,  and  the
+% authors claim that  only a couple of iterations  alternating over each
+% of  the   two  parameters  $(\diag(\bTheta),\brho)$  are   needed  for
+% convergence.   It  thus   remains  a  lot  more   efficient  than  the
+% graphical-Lasso.   On top  of that,  the method  intrinsically imposes
+% symmetry over the  partial correlations $\brho$.  In  short, it embeds
+% the computational advantage of neighborhood selection while estimating
+% the conditional variance  as in the graphical-Lasso.   It is available
+% in  the \texttt{R}-package  \textbf{space}.   Further refinements  and
+% statistical    analyses    have     been    recently    proposed    in
+% \cite{khare2014convex}.
 
 \paragraph*{Model  selection  issues.}   Up  to this  point,  we  have
 completely avoided the fundamental model selection issue, that is, the

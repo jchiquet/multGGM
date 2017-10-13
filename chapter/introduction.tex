@@ -1,0 +1,104 @@
+\section{Introduction}
+
+\todo[inline]{add a couple of lines as a general introduction}
+
+\subsubsection*{Proteomic and Transcriptomic data integration in cancer}
+
+%% 1) Importance of Proteins for tumorigenesis
+Protein deregulations, leading to abnormal activation of signaling
+pathways contribute to tumorigenesis
+\citep{giancotti2014deregulation}. Knowing the level of activation of
+the signaling pathways in any subgroup of tumors could therefore be a
+key indication to understand the biological mechanisms involved in
+tumorigenesis, and to identify some therapeutic targets.  Protein
+expression levels are poorly predicted by RNA expression data
+\citep{akbani2014pan}. Moreover, proteins are also regulated by
+post-translational modifications, such as phosphorylation.  These
+post-translational modifications play essential roles in cell function
+by regulating the intracellular signaling pathways involved in diverse
+processes such as metabolism, transcription, differentiation,
+cytoskeleton rearrangement, apoptosis, intercellular communication and
+proliferation \citep{johnson2009regulation}.
+
+%% 2) Not a lot of protein data (not many samples, not many proteins)
+The post-translational modifications which regulate the activity of
+proteins and therefore impact signaling pathway activity cannot be
+detected in the RNA level.  Therefore, the analysis of proteins is
+essential.  However, measuring the expression of proteins is more
+difficult to implement than the measure of transcriptome (RNA) or
+genome (DNA).  Several technologies have been developed to measure the
+proteome, but the number of samples and the number of proteins that
+can be studied simultaneously is, up to now, limited.  A useful
+technique for this task is the RPPA (Reverse Phase Proetein
+Arrays). It allows studying protein expression levels and the activity
+status of a few hundred proteins by analyzing their phosphorylated
+state, in several hundred of samples \citep{akbani2014realizing}.
+
+%% 3) Study both RNA and proteins to ... get a better understanding of
+%% the underlying biological mechanism involved in (breast) cancer(?)
+To summarize, better understanding the proteome of tumors is essential
+to further our knowledge of cancer cells but proteome data are still
+small and rare.  Integration of proteomic and transcriptomic data is a
+promising avenue to get the most of available proteomic datasets and
+better understand the relatives roles of transcriptome and proteome.
+To take into account the different levels of information, a solution
+is to use multi-attribute graphical Gaussian models. Since it is
+probable that the proteomic and transcriptomic heterogeneity in
+cancers is caused by some few major underlying alterations, the
+hypothesis of proximity in between networks seems reasonable.
+Identifying commonalities between the transcriptome and proteome
+networks should help the prediction of the proteome using the
+transcriptome for which several large public cancer data sets are
+available.
+
+\subsubsection*{Gaussian Graphical Models (GGMs): a canonical framework
+  for network inference modeling}
+
+Gaussian Graphical Models (GGMs)
+\cite{1996_Book_Lauritzen,whittaker1990graphical} are a very
+convenient tool for describing the patterns at play in complex data
+sets.  Indeed, through the notion of partial correlation, they provide
+a well-studied framework for spotting direct relationships between
+variables, and thus reveal the latent structure in a way that can be
+easily interpreted. Application areas are very broad and include for
+instance gene regulatory network inference in biology (using gene
+expression data) as well as spectroscopy, climate studies, functional
+magnetic resonance imaging, etc.  Estimation of GGMs in a sparse,
+high-dimensional setting has thus received much attention recently,
+especially in the case of a single homogeneous data set
+\citep{2006_AS_Meinshausen,2007_BS_Friedman,2008_JMLR_Banerjee,2010_JMLR_Yuan,2011_AS_Cai}.
+
+However, this simple canonical setup is rarely the case with real
+world data sets, because of both the complexity of the mechanism at
+play in biology and the multiplicity of the sources of data in
+omic. Hence, the need for variants of sparse GGM more adapted to
+recent omic data set is huge.
+
+As a first example, the work developed in \cite{2009_EJS_Chiquet,
+  2009_BI_Chiquet} addresses the introduction of a possible special
+organization of the network itself to drive the reconstruction
+process.  Indeed, while sparsity is necessary to solve the problem
+when few observations are available, biasing the estimation of the
+network towards a given topology can help us find the correct graph in
+a more robust way, by preventing the algorithm from looking for
+solutions in regions where the correct graph is less likely to
+reside. As a second example, \cite{2011_SC_Chiquet} addresses the
+problem of sample heterogeneity which typically occurs when several
+assays are performed in different experimental conditions that
+potentially affect the regulations, but are still merged together to
+perform network inference as data is very scarce.  We remedy
+heterogeneity among sample experiments by estimating multiple GGMs,
+each of which matches different modalities of the same set of
+variables, which correspond here to the different experimental
+conditions. This idea, coupled with the integration of biological
+knowledge, was further explored for application in cancer with Marine
+Jeanmougin and Camille Charbonnier \cite{2014_inbook_jeanmougin}.
+
+A deeper generalization of GGM comes by integrating multiple types of
+data measured from diverse platforms, what is sometimes referred to as
+\emph{horizontal} integration: not only does this means a better
+treatment of the heterogeneity of the data, but it also makes the
+network reconstruction more robust. The model presented in this
+chapter gives an answer to this question by offering a solution to
+reconstruct a sparse, multiattribute GGM, recoursing on both proteomic
+and genomic data to infer a consensus network.
