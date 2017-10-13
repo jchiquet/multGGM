@@ -12,7 +12,7 @@ load("RPPA_EXPR_RATHER_ILC.RData")
 prot <- as.matrix(RPPA)
 expr <- t(EXPR)
 
-# length(unique(colnames(rppa)))
+# length(unique(colnames(prot)))
 # length(unique(colnames(expr)))
 
 mc.cores <- 4
