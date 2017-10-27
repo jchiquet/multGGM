@@ -51,11 +51,21 @@ Reduce("rbind", lapply(agreements, function(agreement) {
 ) %>%
   gather(key = "method", value = "AUC", -scenario, -K, -sim, -agreement) %>%
   mutate(scenario = fct_inorder(factor(scenario)), K = factor(K), method = fct_inorder(factor(method)),
-         agreement = fct_inorder(factor(agreement)))
+         agreement = fct_inorder(factor(agreement))) %>% 
+  mutate(agreement = fct_recode(agreement,
+                    "full agreement"       = "full",
+                    "indep. between attr." = "indep",
+                    "indep. within attr."  = "anti"), 
+         method = fct_recode(method,
+                    "separate"       = "unive.indep",
+                    "merge"          = "univar.merge",
+                    "multiattribute" = "multivar") )
+
+task_status <- c("2" = "K=2", "3" = "K=3", "4" = "K=4")
 
 pAUC <- ggplot(results, aes(x=scenario, fill=method, y=AUC)) +
   geom_boxplot(notch = TRUE) + # geom_jitter(alpha=0.1, size=1) +
-  facet_grid(agreement~K) + scale_fill_viridis(discrete=TRUE, option="plasma")+ theme_bw(base_size = 20)
+  facet_grid(agreement~K, scales = "free_y", labeller=labeller(K=task_status)) + scale_fill_viridis(discrete=TRUE, option="plasma")+ theme_bw(base_size = 15)
 ggsave(plot = pAUC, filename ="../../chapter/figures/res_simu_new.pdf", width = 10, height=7)
 
 save(results, file=paste0("simu_",Sys.Date(),".RData"))

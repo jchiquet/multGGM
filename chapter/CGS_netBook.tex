@@ -32,14 +32,49 @@
 
 \graphicspath{{./figures/}}
 
-\title{A multiattribute Gaussian graphical model for inference of
-  multiscale regulatory network: an application in breast cancer}
-\date{\today}
-\author{Julien Chiquet, Guillem Rigaill, Martina Sundqvist}
-
 \begin{document}
 
+\title*{A multiattribute Gaussian graphical model for inferring
+  multiscale regulatory networks: an application in breast cancer}
+\titlerunning{Multiattribute GGM for multiscale regulatory networks}
+\author{Julien Chiquet, Guillem Rigaill and Martina Sundqvist \\
+  \textit{AgroParisTech, INRA, Universit\'e Paris-Saclay}}
+\authorrunning{Chiquet \textit{et al.}}
+\institute{%
+  Julien Chiquet \at MIA Paris, AgroParisTech/INRA, 16 rue Claude Bernard, 75231 Paris CEDEX 05, France \newline \email{julien.chiquet@inra.fr} \and
+  Martina Sundqvist \at MIA Paris, AgroParisTech/INRA, 16 rue Claude Bernard, 75231 Paris CEDEX 05, France \newline \email{martina.sundqvist@agroparistech.fr} \and
+  Guillem Rigaill \at IPS2, B\^atiment 630, Rue de Noetzlin, Plateau du Moulon, 91405 Orsay, France  \newline \email{guillem.rigaill@inra.fr}}
+
+
+
 \maketitle
+
+\abstract{. This chapter addresses the problem of reconstructing
+  regulatory networks in molecular biology by integrating multiple
+  sources of data. We consider data sets measured from diverse
+  technologies all related to the same set of variables and
+  individuals. This situation is becoming more common in in molecular
+  biology, for instance when both proteomic and transcriptomic data
+  related to the same set of ``gene'' are available on a given cohort
+  of patients.\newline \indent To infer a consensus network that
+  integrates both proteomic and transcriptomic data, we introduce a
+  multivariate extension of Gaussian graphical models (GGM), which we
+  refer to as \textit{multiattribute} GGM. Indeed, the GGM framework
+  offers a good proxy for modeling direct links between biological
+  entities thanks to the equivalence between the sparsity pattern of
+  the inverse covariance matrix and the structure of conditional
+  independence of the random vector which describes the recorded omic
+  measurements. We perform the inference of our multivariate GGM by
+  recoursing on a group-Lasso penalty that operates at a multiscale
+  level, in order to select interactions which operate both at the
+  proteomic and the transcriptomic level. We end up with a
+  \textit{consensus} network embedding information shared at multiple
+  scales of the cell. We illustrate this method on two breast cancer
+  data sets.}
+
+\keywords{Multiscale Regulatory Network $\cdot$ Gaussian Graphical
+  Model $\cdot$ Group-Lasso $\cdot$ Proteomic Data $\cdot$ Multi-Omic
+  Data}
 
 \input{introduction}
 
@@ -55,3 +90,4 @@
 \bibliography{biblio}
 
 \end{document}
+
