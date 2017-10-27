@@ -420,39 +420,39 @@ the inference of biological networks  has been pursued with success in
 \cite{haury2012tigress}, advocating  for the use of  stability methods
 on real problems.
 
-A  final  possibility ---  that  remains  somewhat confidential  while
-writing these lines --- is to rely on sparse procedures which are less
-sensitive to $\lambda$: among these,  we may cite the ``scaled-Lasso''
-\cite{sun2012scaled} for linear regression,  adapted to the context of
-network   inference  in   a  neighborhood-selection-like   fashion  in
-\cite{sun2013sparse}.
+% A  final  possibility ---  that  remains  somewhat confidential  while
+% writing these lines --- is to rely on sparse procedures which are less
+% sensitive to $\lambda$: among these,  we may cite the ``scaled-Lasso''
+% \cite{sun2012scaled} for linear regression,  adapted to the context of
+% network   inference  in   a  neighborhood-selection-like   fashion  in
+% \cite{sun2013sparse}.
 
-\paragraph*{Extensions towards  non Gaussian settings.}   As hopefully
-illustrated throughout this  section, sparse GGM is a  mature and well
-controlled framework, with solid contributions both on the statistical
-and  the  computational sides.   There  is  also expanding  innovative
-literature tending to broaden the applicability of GGMs, especially to
-overcome the  Gaussian assumption.  Indeed, particularly  in genomics,
-there is a growing interest  for the multivariate modeling of discrete
-random vectors, as  sequencing techniques provide us  with count data.
-In this perspective, some attempts were  made for a Poisson version of
-the  above  techniques:  in   \cite{allen2012log}  for  instance,  the
-neighborhood selection  approach is  extended to a  sparse generalized
-linear model setup; still, interpretability of the inferred network is
-questionable, as a null partial  correlation does not mean conditional
-dependency   in   the   non-Gaussian   case.   In   a   recent   paper
-\cite{yang2013poisson}, a review of  existing Poisson graphical models
-is  provided,  where the  notion  of  conditional dependency  is  more
-carefully specified.
+% \paragraph*{Extensions towards  non Gaussian settings.}   As hopefully
+% illustrated throughout this  section, sparse GGM is a  mature and well
+% controlled framework, with solid contributions both on the statistical
+% and  the  computational sides.   There  is  also expanding  innovative
+% literature tending to broaden the applicability of GGMs, especially to
+% overcome the  Gaussian assumption.  Indeed, particularly  in genomics,
+% there is a growing interest  for the multivariate modeling of discrete
+% random vectors, as  sequencing techniques provide us  with count data.
+% In this perspective, some attempts were  made for a Poisson version of
+% the  above  techniques:  in   \cite{allen2012log}  for  instance,  the
+% neighborhood selection  approach is  extended to a  sparse generalized
+% linear model setup; still, interpretability of the inferred network is
+% questionable, as a null partial  correlation does not mean conditional
+% dependency   in   the   non-Gaussian   case.   In   a   recent   paper
+% \cite{yang2013poisson}, a review of  existing Poisson graphical models
+% is  provided,  where the  notion  of  conditional dependency  is  more
+% carefully specified.
 
-Finally, there is much interest  for pretreatment methods which change
-the   original   data  into   more   ``Gaussian''   data  via   simple
-transformations.   Hence,   we  can   still  take  advantage   of  the
-well-controlled  sparse GGM  framework.   A successful  work based  on
-Gaussian  copulas  is  the  nonparanormal  distribution  developed  in
-\cite{liu2009nonparanormal}.    It    is   implemented    within   the
-\texttt{R}-package  \textbf{huge}, at  a negligible  cost compared  to
-that of the inference process itself.
+% Finally, there is much interest  for pretreatment methods which change
+% the   original   data  into   more   ``Gaussian''   data  via   simple
+% transformations.   Hence,   we  can   still  take  advantage   of  the
+% well-controlled  sparse GGM  framework.   A successful  work based  on
+% Gaussian  copulas  is  the  nonparanormal  distribution  developed  in
+% \cite{liu2009nonparanormal}.    It    is   implemented    within   the
+% \texttt{R}-package  \textbf{huge}, at  a negligible  cost compared  to
+% that of the inference process itself.
 
 %%% Local Variables:
 %%% mode: latex

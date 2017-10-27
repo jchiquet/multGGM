@@ -53,24 +53,22 @@
   regulatory networks in molecular biology by integrating multiple
   sources of data. We consider data sets measured from diverse
   technologies all related to the same set of variables and
-  individuals. This situation is becoming more common in in molecular
-  biology, for instance when both proteomic and transcriptomic data
-  related to the same set of ``gene'' are available on a given cohort
-  of patients.\newline \indent To infer a consensus network that
-  integrates both proteomic and transcriptomic data, we introduce a
-  multivariate extension of Gaussian graphical models (GGM), which we
-  refer to as \textit{multiattribute} GGM. Indeed, the GGM framework
-  offers a good proxy for modeling direct links between biological
-  entities thanks to the equivalence between the sparsity pattern of
-  the inverse covariance matrix and the structure of conditional
-  independence of the random vector which describes the recorded omic
-  measurements. We perform the inference of our multivariate GGM by
-  recoursing on a group-Lasso penalty that operates at a multiscale
-  level, in order to select interactions which operate both at the
-  proteomic and the transcriptomic level. We end up with a
-  \textit{consensus} network embedding information shared at multiple
-  scales of the cell. We illustrate this method on two breast cancer
-  data sets.}
+  individuals. This situation is becoming more and more common in
+  molecular biology, for instance when both proteomic and
+  transcriptomic data related to the same set of ``gene'' are
+  available on a given cohort of patients.\newline \indent To infer a
+  consensus network that integrates both proteomic and transcriptomic
+  data, we introduce a multivariate extension of Gaussian graphical
+  models (GGM), which we refer to as \textit{multiattribute}
+  GGM. Indeed, the GGM framework offers a good proxy for modeling
+  direct links between biological entitiesc. We perform the inference
+  of our multivariate GGM with a neighborhood selection procedure that
+  operates at a multiscale level. This procedure employs a group-Lasso
+  penalty in order to select interactions which operate both at the
+  proteomic and the transcriptomic level between two genes. We end up
+  with a \textit{consensus} network embedding information shared at
+  multiple scales of the cell. We illustrate this method on two breast
+  cancer data sets.}
 
 \keywords{Multiscale Regulatory Network $\cdot$ Gaussian Graphical
   Model $\cdot$ Group-Lasso $\cdot$ Proteomic Data $\cdot$ Multi-Omic

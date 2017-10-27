@@ -11,8 +11,8 @@ easily interpreted. Application areas are very broad and include for
 instance gene regulatory network inference in biology (using gene
 expression data) as well as spectroscopy, climate studies, functional
 magnetic resonance imaging, etc.  Estimation of GGMs in a sparse,
-high-dimensional setting has thus received much attention recently,
-especially in the case of a single homogeneous data set
+high-dimensional setting has thus received much attention in the last
+decade, especially in the case of a single homogeneous data set
 \citep{2006_AS_Meinshausen,2007_BS_Friedman,2008_JMLR_Banerjee,2010_JMLR_Yuan,2011_AS_Cai}.
 
 However, this simple canonical setup is rarely the case with real
@@ -38,8 +38,8 @@ heterogeneity among sample experiments by estimating multiple GGMs,
 each of which matches different modalities of the same set of
 variables, which correspond here to the different experimental
 conditions. This idea, coupled with the integration of biological
-knowledge, was further explored for application in cancer with Marine
-Jeanmougin and Camille Charbonnier \citep{2014_inbook_jeanmougin}.
+knowledge, was further explored for application in cancer in
+\cite{2014_inbook_jeanmougin}.
 
 A deeper generalization of GGM comes by integrating multiple types of
 data measured from diverse platforms, what is sometimes referred to as
@@ -58,20 +58,21 @@ pathways, contribute to tumorigenesis
 \citep{giancotti2014deregulation}. Knowing the level of activation of
 the signaling pathways in any subgroup of tumors could therefore be a
 key indication to understand the biological mechanisms involved in
-tumorigenesis, and to identify some therapeutic targets.  Protein
-expression levels are poorly predicted by RNA expression data
-\citep{akbani2014pan}. Moreover, proteins are also regulated by
-post-translational modifications, such as phosphorylation.  These
-post-translational modifications play essential roles in cell function
-by regulating the intracellular signaling pathways involved in diverse
-processes such as metabolism, transcription, differentiation,
-cytoskeleton rearrangement, apoptosis, intercellular communication and
-proliferation \citep{johnson2009regulation}.
-
+tumorigenesis, and to identify some therapeutic targets.  % Protein
+% expression levels are poorly predicted by RNA expression data
+% \citep{akbani2014pan}. Moreover, proteins are also regulated by
+% post-translational modifications, such as phosphorylation.  These
+% post-translational modifications play essential roles in cell function
+% by regulating the intracellular signaling pathways involved in diverse
+% processes such as metabolism, transcription, differentiation,
+% cytoskeleton rearrangement, apoptosis, intercellular communication and
+% proliferation \citep{johnson2009regulation}.
+%
 %% 2) Not a lot of protein data (not many samples, not many proteins)
-The post-translational modifications which regulate the activity of
-proteins and therefore impact signaling pathway activity cannot be
-detected in the RNA level.  Therefore, the analysis of proteins is
+% The post-translational modifications which regulate the activity of
+% proteins and therefore impact signaling pathway activity cannot be
+% detected in the RNA level.
+Therefore, the analysis of proteins is
 essential.  However, measuring the expression of proteins is more
 difficult to implement than the measure of transcriptome (RNA) or
 genome (DNA).  Several technologies have been developed to measure the

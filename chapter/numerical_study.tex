@@ -1,8 +1,8 @@
 \section{Numerical  experiments}
 
 \paragraph*{Simulation study.} We propose a simple simulation to
-illustrate the interest of using multi-attribute networks and the
-efficiency of our proposal.  The simulations are set up as follows:
+illustrate the interest of using multi-attribute networks.  The
+simulations are set up as follows:
 \begin{enumerate}
 \item  Draw  a random  undirected  network  with  $p$ nodes  from  the
   Erdös-Renyi model;
@@ -29,17 +29,17 @@ We choose small networks with $p=20$, with $20$ edges on average and
 vary $n$ from $p/2$ to $2p$. We consider cases where the number of
 attributes is $K=2,3,4$.  We either apply neighborhood selection
 procedure on each dimension separately and compute a mean AUC
-(\emph{separate}), or neighborhood selection procedure on merge data
-then compute AUC (\emph{merge}), or the multi-attribute counterpart
-with group-wise penalty \eqref{eq:penalty_grp_variate} on the
-multivariate data.  We compute the AUC for each method and replicate
-the experiment 100 times. On Figure \ref{fig:simu_multi}, it is clear
-that aggregation improves upon single-attribute methods. Even when we
-have independence \emph{between} attributes (which is barely
-meaningful towards application to regulatory networks), in which case
-it is a very good idea to merge the problems together to double the
-sample size, our method remains quite competitive and robust. In all
-other cases, it outperforms the competing approaches.
+(\emph{separate}), or neighborhood selection procedure on merge data,
+thus doubling the sample size (\emph{merge}), or our multi-attribute
+approach with group-wise penalty \eqref{eq:penalty_grp_variate}.  We
+compute the AUC for each method and replicate the experiment 100
+times. On Figure \ref{fig:simu_multi}, it is clear that aggregation
+improves upon single-attribute methods. Even when we have independence
+\emph{between} attributes (which is barely meaningful towards
+application to regulatory networks), in which case it is a very good
+idea to merge the problems together to double the sample size, our
+method remains quite competitive and robust. In all other cases, it
+outperforms the competing approaches.
 \begin{figure}[htbp!]
   \centering
   \includegraphics[width=\textwidth]{figures/res_simu_new}
