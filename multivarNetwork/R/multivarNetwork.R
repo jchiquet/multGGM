@@ -6,7 +6,7 @@
 #' @param X a list of matrices with the same dimension, corresponding to multiple experiments related
 #' to the same individuals and variables, e.g., proteomics and transcriptomics data.
 #' @param sym.rule a character, either "AND" or "OR" to define the  post-symmetrization rule applied to the coefficients in neighborhood selection
-#' @param cv.choice a character for defining the cross-validation rule used to choose the penalty level (i.e., the number of edges in the the network).
+#' @param select a character for defining the cross-validation rule used to choose the penalty level (i.e., the number of edges in the the network).
 #' If "none", the whole regulariazation paths is sent back. If "min" or "1se", penalties are cross-validation for each variable
 #' with the corresponding rule.
 #' @param nlambda integer defining the number of penalty levels used on the grid
@@ -19,11 +19,12 @@
 #' @import Matrix
 #' @import glmnet
 #' @import gglasso
+#' @import stabsel
 #' @export
-multivarNetwork <- function(X, sym.rule="AND", cv.choice=c("none", "1se", "min"),
-                            nlambda=50, min.ratio=1e-3, mc.cores=1) {
+multivarNetwork <- function(X, sym.rule="AND", select=c("none", "1se", "min", "stabsel"),
+                            nlambda=50, min.ratio=1e-3, mc.cores=1, nfold=5, cutoff=0.75) {
 
-  cv.choice <- match.arg(cv.choice)
+  select <- match.arg(select)
   LAPPLY <- ifelse(mc.cores > 1, pbmclapply, mclapply)
 
   stopifnot(is.list(X) | is.matrix(X))
@@ -56,13 +57,15 @@ multivarNetwork <- function(X, sym.rule="AND", cv.choice=c("none", "1se", "min")
     return(max(sqrt(rowsum(as.numeric(crossprod(data$X, data$Y)^2), group)/(2*n))))
   }))
 
+  ## Compute an common grid of penalty levels
   lambda <- 10^seq(from=log10(lambda.max),log10(min.ratio*lambda.max),len=nlambda)
 
-  ## compute all coefficients
-  f_infer <- ifelse(K==1, lasso, grplasso)
+  ## extrac the appropriate inference function taking
+  f_infer <- neighborhood.selection(K, select, group, lambda)
 
+  ## compute all coefficients
   coefficients <- do.call(rbind,LAPPLY(training_sets, function(d) {
-    coef <- f_infer(d$X, d$Y, group, lambda, cv.choice)
+    coef <- f_infer(d$X, d$Y)
     beta  <- matrix(0, p, ncol(coef))
     beta[-d$j, ] <- as.matrix(coef)
     beta
@@ -77,6 +80,79 @@ multivarNetwork <- function(X, sym.rule="AND", cv.choice=c("none", "1se", "min")
   })
 
   return(list(coefficients = coefficients, networks = networks, penalties = lambda))
+}
+
+neighborhood.selection <- function(K, select, group, lambda) {
+  ## return a function that take x and y as argument with fixed lambda and group
+  if (K == 1) {
+    ## single attribute: lasso based learning
+    f <- switch(select,
+      "none"     = lasso_path(lambda),
+      "stabsel"  = lasso_stabsel(lambda), ## add cutoff and PFER
+      # default: crossval with min or 1se rule
+      lasso_crossval(lambda, select)
+    )
+  } else {
+  ## multiattribute: group-lasso based learning
+    f <- switch(select,
+   "none"     = group_lasso_path(lambda, group),
+   "stabsel"  =
+      function(x, y) {
+        NULL # TODO
+      },
+   # default: crossval with min or 1se rule
+   group_lasso_crossval(lambda, group, select)
+    )
+  }
+  f
+}
+
+lasso_path <- function(lambda) {
+  function(x, y) {
+    out <- glmnet(x, y, lambda=lambda, intercept=FALSE, standardize=FALSE)
+    beta <- coef.glmnet(out)[-1,]
+    abs(beta)
+  }
+}
+
+lasso_crossval <- function(lambda, select) {
+  function(x, y) {
+    out <- cv.glmnet(x, y, lambda=lambda, intercept=FALSE, standardize=FALSE)
+    beta <- matrix(coef.cv.glmnet(out, s=paste("lambda",select, sep="."))[-1], ncol=1)
+    abs(beta)
+  }
+}
+
+lasso_stabsel <- function(lambda) {
+  function(x, y) {
+    out <- stabsel.matrix(x, y, fitfun = glmnet.lasso, args.fitfun = list(lambda = lambda, intercept=FALSE, standardize=FALSE), cutoff = 0.75, PFER = 1)
+    beta <- rep(0,ncol(x))
+    beta[stab.glmnet$selected] <- 1
+    beta
+  }
+}
+
+group_lasso_path <- function(lambda, group) {
+  function(x, y) {
+    o <- order(group)
+    x <- as.matrix(x)[, o]
+    out <- gglasso(x, y, group[o], lambda=lambda, intercept=FALSE)
+    beta <- coef(out)[-1,]
+    beta <- apply(beta[order(o), , drop=FALSE], 2, function(b) sqrt(rowsum(b^2,group)))
+    beta
+  }
+}
+
+group_lasso_crossval <- function(lambda, group, select) {
+  function(x, y) {
+    o <- order(group)
+    x <- as.matrix(x)[, o]
+    out <- cv.gglasso(x, y, group[o], lambda=lambda, intercept=FALSE)
+    beta <- matrix(coef(out, s=paste("lambda",select, sep="."))[-1], ncol=1)
+    beta <- apply(beta[order(o), , drop=FALSE], 2, function(b) sqrt(rowsum(b^2,group)))
+    beta
+  }
+
 }
 
 lasso <- function(x, y, group, lambda, cv.choice) {

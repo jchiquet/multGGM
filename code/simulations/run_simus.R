@@ -35,9 +35,9 @@ Reduce("rbind", lapply(agreements, function(agreement) {
         cat("\n - n =", eval(n)," ")
         Xmult <- rmultivar(eval(n), K, G, agreement, hardeness)$X
         Xuniv <- Reduce("rbind", Xmult)
-        univar.indep <- lapply(Xmult, multivarNetwork, cv.choice="none")
-        univar.merge <- multivarNetwork(Xuniv, cv.choice="none")
-        multivar     <- multivarNetwork(Xmult, cv.choice="none")
+        univar.indep <- lapply(Xmult, multivarNetwork, select="none")
+        univar.merge <- multivarNetwork(Xuniv, select="none")
+        multivar     <- multivarNetwork(Xmult, select="none")
         data.frame(
           univar.indep = mean(sapply(univar.indep, function(univ) perf.auc(perf.roc(univ$networks, G)))) ,
           univar.merge = perf.auc(perf.roc(univar.merge$networks, G)),
@@ -51,13 +51,13 @@ Reduce("rbind", lapply(agreements, function(agreement) {
 ) %>%
   gather(key = "method", value = "AUC", -scenario, -K, -sim, -agreement) %>%
   mutate(scenario = fct_inorder(factor(scenario)), K = factor(K), method = fct_inorder(factor(method)),
-         agreement = fct_inorder(factor(agreement))) %>% 
+         agreement = fct_inorder(factor(agreement))) %>%
   mutate(agreement = fct_recode(agreement,
                     "full agreement"       = "full",
                     "indep. between attr." = "indep",
-                    "indep. within attr."  = "anti"), 
+                    "indep. within attr."  = "anti"),
          method = fct_recode(method,
-                    "separate"       = "unive.indep",
+                    "separate"       = "univar.indep",
                     "merge"          = "univar.merge",
                     "multiattribute" = "multivar") )
 
