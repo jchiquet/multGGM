@@ -305,22 +305,22 @@ straightforward  in  this  case.    This  makes  this  approach  quite
 competitive,  especially when  coupled  with  additional bootstrap  or
 resampling techniques \cite{2010_JRSS_Meinshausen}.
 
-On the statistical  side, neighborhood selection has  been reported to
+On the statistical side, neighborhood selection has been reported to
 be sometimes empirically more accurate in terms of edge detection than
-is the graphical-Lasso \cite{2008_SAGM_Villers,2008_preprint_Rocha} on
-certain types of data.  This  is somewhat supported by the statistical
-analysis  of  \cite{2011_EJS_Ravikumar},  who   show  that  under  the
-classical    irrepresentability     conditions    for     the    Lasso
-\cite{2006_JMLR_Zhao,2006_AS_Meinshausen}   and  for   an  appropriate
-choice  of   $\lambda$,  neighborhood  selection   achieves  selection
-consistency with high  probability when the sample size $n$  is of the
-order of  $\mathcal{O}(d\log(p))$ with $d$  the maximal degree  of the
-target   graph  $\graph$.    This   is  to   be   compared  with   the
+the graphical-Lasso \cite{2008_SAGM_Villers,2008_preprint_Rocha} on
+certain types of data.  This is somewhat supported by the statistical
+analysis of \cite{2011_EJS_Ravikumar}, who show that under the
+classical irrepresentability conditions for the Lasso
+\cite{2006_JMLR_Zhao,2006_AS_Meinshausen} and for an appropriate
+choice of $\lambda$, neighborhood selection achieves selection
+consistency with high probability when the sample size $n$ is of the
+order of $\mathcal{O}(d\log(p))$ with $d$ the maximal degree of the
+target graph $\graph$.  This is to be compared with the
 $\mathcal{O}(d^2\log(p))$ required by the graphical-Lasso (even if the
-corresponding  ``irrepresentability  conditions''   are  not  strictly
-comparable).   A   rough  explanation  for  this   difference  on  the
-asymptotic  is  that  the  graphical-Lasso  intends  to  estimate  the
-concentration matrix  on top of  selecting the nonzero  entries, while
+corresponding ``irrepresentability conditions'' are not strictly
+comparable).  A rough explanation for this difference on the
+asymptotic is that the graphical-Lasso intends to estimate the
+concentration matrix on top of selecting the nonzero entries, while
 neighborhood selection focuses on the selection problem.
 
 % \paragraph*{Sparse PArtial Correlation Estimation (SPACE).}
@@ -373,16 +373,16 @@ on information criteria of the form
 \begin{equation*}
   \textrm{IC}_\lambda = - 2 \textrm{loglik}(\widehat{\invcov}_\lambda;\bX) + \pen(\df(\widehat{\invcov}_\lambda)),
 \end{equation*}
-where  ``$\pen$''  is  a  function penalizing  the  model  complexity,
-described by $\df$,  the degrees of freedom of  the current estimator.
-We meet the AIC  by choosing $\pen(x) = 2 x $ and  the BIC by choosing
-$\pen(x)  =  \log(n)  x$.   However,   AIC  and  BIC  are  based  upon
-assumptions  which are  not suited  to high-dimensional  settings (see
-\cite{2012_SS_Giraud}).  Moreover,  the notion  of degrees  of freedom
-for sparse methods has to be specified, not to mention that one has to
-adapt these criteria  to the case of GGMs.  An  example of a criterion
-meeting  these  prerequisites is  the  extended  BIC for  sparse  GGMs
-\cite{foygel2010extended}:
+where ``$\pen$'' is a function penalizing the model complexity,
+described by $\df$, the degrees of freedom of the current estimator.
+We meet the AIC by choosing $\pen(x) = 2 x $ and the BIC by choosing
+$\pen(x) = \log(n) x$.  However, AIC and BIC are based upon
+assumptions which are not suited to high-dimensional settings
+\citep[see][]{2012_SS_Giraud}.  Moreover, the notion of degrees of
+freedom for sparse methods has to be specified, not to mention that
+one has to adapt these criteria to the case of GGMs.  An example of a
+criterion meeting these prerequisites is the extended BIC for sparse
+GGMs \citep{foygel2010extended}:
 \begin{equation}
   \label{eq:EBIC_ggm}
   \text{EBIC}_\gamma(\widehat{\invcov}_\lambda)  =   -2 \textrm{loglik}
@@ -395,7 +395,7 @@ $\gamma=0$ --  to choose overly  dense graphs in  the high-dimensional
 setting.      Further     justification     can    be     found     in
 \cite{foygel2010extended}. A competing approach, designed to compare a
 family  of GGM  -- possibly  inferred  with different  methods --,  is
-GGMSelect \cite{2012_SAGMB_Giraud,giraud2008estimation}.
+GGMSelect \citep{2012_SAGMB_Giraud,giraud2008estimation}.
 
 Another possibility is to rely on resampling/subsampling procedures to
 select a  set of  edges which  are robust to  small variations  of the
