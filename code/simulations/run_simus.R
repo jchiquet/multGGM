@@ -53,9 +53,9 @@ Reduce("rbind", lapply(agreements, function(agreement) {
   mutate(scenario = fct_inorder(factor(scenario)), K = factor(K), method = fct_inorder(factor(method)),
          agreement = fct_inorder(factor(agreement))) %>%
   mutate(agreement = fct_recode(agreement,
-                    "full agreement"       = "full",
-                    "indep. between attr." = "indep",
-                    "indep. within attr."  = "anti"),
+                    "same intra, same inter" = "full",
+                    "same intra, no inter"   = "indep",
+                    "no intra, same inter"   = "anti"),
          method = fct_recode(method,
                     "separate"       = "univar.indep",
                     "merge"          = "univar.merge",

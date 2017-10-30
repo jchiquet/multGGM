@@ -29,7 +29,7 @@ rmultivar <- function(n, K, G, agreement = c("full", "indep", "anti"), hardness 
   B <- U %*% diag(D) %*% t(U)
 
   ## The concentration matrix is built from B
-  ## with hardness manage thourgh diagonal smoothing
+  ## with hardness manage through diagonal smoothing
 
   ## Then, generate the associate multivariate Gaussian sample
   X <- rmvnorm(n,sigma=solve(B + hardness * diag(diag(B))), method="chol")

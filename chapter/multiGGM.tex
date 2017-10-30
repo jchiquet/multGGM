@@ -1,4 +1,4 @@
-\section{Accounting for multiscale data: multi-attribute GGM}
+\section{Accounting for multiscale data: multiattribute GGM}
 \label{sec:multiattribute_ggm}
 
 We now place  ourselves in the situation where, for  our collection of
@@ -12,7 +12,7 @@ similarity  between  element  attributes.   In this  section,  we  are
 interested in reconstructing such networks based upon $n$ observations
 of a set of $K$ attributes  of the $p$ elements composing the vertices
 of the  network. To this end,  we propose a natural  generalization of
-sparse GGM to sparse \emph{multi-attribute} GGMs.
+sparse GGM to sparse \emph{multiattribute} GGMs.
 
 \begin{figure}[htbp!]
   \centering
@@ -36,36 +36,36 @@ sparse GGM to sparse \emph{multi-attribute} GGMs.
     (rna) edge [-,line width=2pt,draw=white,bend left] ($(rna.west) -(15mm,0)$)
     (rna) edge [bend left, ->] node[below] {\textcolor{mblue}{regulates}} ($(rna.west) -(15mm,0)$);
   \end{tikzpicture}    
-  \caption{Basic example of a multi-attribute network in genomics:
+  \caption{Basic example of a multiattribute network in genomics:
     activity  of a  gene  can  be measured  at  the transcriptomic  and
     proteomic levels, and gene regulation affected accordingly}
 \label{fig:central_dogma}
 \end{figure}
 
-\paragraph*{Why    multi-attribute    networks?}    The    need    for
-multi-attribute networks  is relevant in many  application fields, but
+\paragraph*{Why multiattribute networks?}  The need for
+multiattribute networks is relevant in many application fields, but
 seems particularly applicable in genomics.  Indeed, with the plurality
-of emerging technologies and sequencing  techniques, it is possible to
-record many signals related to the  same set of biological features at
-various scales  or locations of  the cell.  Consider for  instance the
-simplifying -- still hopefully didactic  -- central dogma of molecular
-biology,  sketched   in  Figure   \ref{fig:central_dogma}:  basically,
-expression of a gene encoding for  a protein can be measured either at
-the transcriptome level,  in terms of its quantity of  mRNA, or at the
-protein  level,  in  terms  of the  concentration  of  the  associated
+of emerging technologies and sequencing techniques, it is possible to
+record many signals related to the same set of biological features at
+various scales or locations of the cell.  Consider for instance the
+simplifying -- still hopefully didactic -- central dogma of molecular
+biology, sketched in Figure \ref{fig:central_dogma}: basically,
+expression of a gene encoding for a protein can be measured either at
+the transcriptome level, in terms of its quantity of mRNA, or at the
+protein level, in terms of the concentration of the associated
 protein.  Still, different technologies are used to measure either the
-transcriptome  or the  proteome, typically,  microarray or  sequencing
-technology for gene expression  levels and cytometric or spectrometric
-experiments for  protein concentrations.   Although these  signals are
-very  heterogeneous (different  levels of  noise, count  vs. continuous
-data,  etc.),  they  do  share  commonality  as  they  undergo  common
-biological processes.  We then  put an  edge in the  network if  it is
-supported in both spaces (gene and  protein spaces).  Our hope is that
-molecular profiles combined on the  same set of biological samples can
-be  \textit{synergistic}, in  order  to identify  a ``consensus''  and
+transcriptome or the proteome, typically, microarray or sequencing
+technology for gene expression levels and cytometric or
+immunofluorescence experiments for protein concentrations.  Although
+these signals are very heterogeneous (different levels of noise, count
+vs. continuous data, etc.), they do share commonality as they undergo
+common biological processes.  We then put an edge in the network if it
+is supported in both spaces (gene and protein spaces).  Our hope is
+that molecular profiles combined on the same set of biological samples
+can be \textit{synergistic}, in order to identify a ``consensus'' and
 hopefully more robust network.
 
-\paragraph*{Multi-attribute GGM.}   Let $\mathcal{P}=\{1,\dots,p\}$ be
+\paragraph*{multiattribute GGM.}   Let $\mathcal{P}=\{1,\dots,p\}$ be
 a  set  of  variables  of  interest, each  of  them  having  some  $K$
 attributes.    Consider  the   random   vector  $X   =  (X_1,   \dots,
 X_p)^\intercal$  such  as  $X_i  =(X_{i1},\dots,X_{iK})^\intercal  \in
@@ -87,13 +87,13 @@ matrices defined block-wise
 \ \forall (i,j)\in\mathcal{P}^2,
 \]
 where $\mathcal{M}_{a,b}$ is the set  of real-valued matrices with $a$
-rows, $b$ columns.   Such a multi-attribute framework  has been studied
+rows, $b$ columns.   Such a multiattribute framework  has been studied
 in \cite{katenka2012inference} with a reconstruction method based upon
 canonical  correlations in  order to  test dependencies  between pairs
 $(i,j)$ at the attribute level  using covariance.  Here, we propose to
 rely on partial  correlations in a multivariate  framework rather than
 (canonical)  correlations   to  describe  relationships   between  the
-features, and  thus extend  GGM to  a multi-attribute  framework.  The
+features, and  thus extend  GGM to  a multiattribute  framework.  The
 objective   is  to   define   a  ``canonical''   version  of   partial
 correlations.      In    our     setting,    the     target    network
 $\graph=(\mathcal{P},\mathcal{E})$  is  defined  as  the  multivariate
@@ -107,14 +107,14 @@ In words,  there is  no edge  between two variables  $i$ and  $j$ when
 their attributes are all conditionally independent.
 
 \paragraph*{A multivariate version of neighborhood selection.}  Our
-idea for performing sparse multi-attribute GGM inference is to define
+idea for performing sparse multiattribute GGM inference is to define
 a multivariate analog of the neighborhood selection approach
 \cite{2006_AS_Meinshausen} (see Section \ref{sec:sparseGGM}, Equations
 \eqref{eq:Lasso_MB} and \eqref{eq:MB_pseudo}). Indeed, it seems to be
 the most natural and convenient setup toward multivariate
 generalization.  Nevertheless, other sparse GGM inference method like
 the graphical-Lasso \eqref{eq:MLE_l1} should have an equivalent
-multi-attribute version. A possibility is explored in
+multiattribute version. A possibility is explored in
 \cite{kolar2014graph} for instance.
 
 To extend the neighborhood selection approach to a multiattribute
@@ -163,7 +163,7 @@ variable:
     \mathbf{x}^N \\
   \end{bmatrix}
   = \begin{bmatrix}
-    \mathbf{X}_1 & \dots & \mathbf{X}^p \\
+    \mathbf{X}^1 & \dots & \mathbf{X}^p \\
   \end{bmatrix} 
   % = \begin{bmatrix}
   %   \mathbf{x}_1^1 & \dots & \mathbf{x}_1^p \\ \hline
