@@ -12,7 +12,7 @@ similarity  between  element  attributes.   In this  section,  we  are
 interested in reconstructing such networks based upon $n$ observations
 of a set of $K$ attributes  of the $p$ elements composing the vertices
 of the  network. To this end,  we propose a natural  generalization of
-sparse GGM to sparse \emph{multiattribute} GGMs.
+sparse GGMs to sparse \emph{multiattribute} GGMs.
 
 \begin{figure}[htbp!]
   \centering
@@ -138,43 +138,43 @@ where $\mathbf{B}_j\in\mathcal{M}_{(p-1)K,K}$ is defined block-wise
   \mathbf{B}_j = \begin{bmatrix}
     \mathbf{B}_j^{(1)} \\ \hline
     \vdots \\ \hline
-    \mathbf{B}_j^{(p-1)} \\ 
-  \end{bmatrix} = \invcov_{jj}^{-1} \times \begin{bmatrix}
-    \invcov_j^{(1)} \\ \hline
+    \mathbf{B}_j^{(j-1)} \\ 
+    \mathbf{B}_j^{(j+1)} \\ 
     \vdots \\ \hline
-    \invcov_j^{(p-1)} \\ 
-  \end{bmatrix},
+    \mathbf{B}_j^{(p)} \\ 
+  \end{bmatrix} = - \begin{bmatrix}
+    \invcov_{j1} \\ \hline
+    \vdots \\ \hline
+    \invcov_{j(j-1)} \\ 
+    \invcov_{j(j+1)} \\ 
+    \vdots \\ \hline
+    \invcov_{j(p)} \\ 
+  \end{bmatrix}^\top \times \invcov_{jj}^{-1},
 \end{equation*}
-and  where each  $\mathbf{B}_j^{(i)}$ is  a $K\times  K$ matrix  which
-links attributes  of variables  $(i,j)$.  We  see that  recovering the
-support of $\bB_j$ block-wise is equivalent to reconstructing the network
-defined  in  \eqref{eq:multi_net}.  Estimation   of  $\bB_j$  is  thus
-typically achieved through  sparse methods.  To this  end, we consider
-an  i.i.d.   sample  $\{X^\ell\}_{\ell=1}^n$  of $X$  such  that  each
-attribute is observed $n$ times for the $p$ variable, each $X^n$ being
-a $pK$-size  row vector staked  in a $\mathcal{M}_{n,pK}$  data matrix
-$\mathbf{X}$ , so that $\bX_j  \in \mathcal{M}_{n,K}$ is a real-value,
-$n \times  K$ block  matrix containing  the data  related to  the $j$th
-variable:
+and where each $\mathbf{B}_j^{(i)}$ is a $K\times K$ matrix which
+links attributes of variables $(i,j)$.  We see that recovering the
+support of $\bB_j$ block-wise is equivalent to reconstructing the
+network defined in \eqref{eq:multi_net}.  Estimation of $\bB_j$ is
+thus typically achieved through sparse methods.  To this end, we
+consider an i.i.d.  sample $\{X^\ell\}_{\ell=1}^n$ of $X$ such that
+each attribute is observed $n$ times for the $p$ variables, each $X^n$
+being a $pK$-size row vector staked in a $\mathcal{M}_{n,pK}$ data
+matrix $\mathbf{X}$ , so that $\bX_j \in \mathcal{M}_{n,K}$ is a
+real-value, $n \times K$ block matrix containing the data related to
+the $j$th variable:
 \begin{multline*}
   \mathbf{X} = \begin{bmatrix}
     \mathbf{x}^1 \\ \hline
     \vdots \\\hline
-    \mathbf{x}^N \\
+    \mathbf{x}^n \\
   \end{bmatrix}
   = \begin{bmatrix}
-    \mathbf{X}^1 & \dots & \mathbf{X}^p \\
+    \mathbf{X}_1 & \dots & \mathbf{X}_p \\
   \end{bmatrix} 
-  % = \begin{bmatrix}
-  %   \mathbf{x}_1^1 & \dots & \mathbf{x}_1^p \\ \hline
-  %   \vdots \\\hline
-  %   \mathbf{x}_N^1 & \dots & \mathbf{x}_N^p \\
-  % \end{bmatrix}
-  % \\
   = \begin{bmatrix}
-    X^{11}_1 & X^{1K}_1 & \vline & \dots & \vline & X^{p1}_1 & \dots & X^{pK}_1 \\ \hline
-    \vdots & \vdots & \vline & \dots & \vline & & & \\ \hline
-    X^{11}_n & X^{1K}_n & \vline & \dots & \vline & X^{1K}_n & \dots & X^{pK}_n \\ 
+    X_{11}^1 & \dots & X_{1K}^1 & \vline & \dots & \vline & X_{p1}^1 & \dots & X_{pK}^1 \\ \hline
+    \vdots & & \vdots & \vline & \dots & \vline & & & \\ \hline
+    X_{11}^n & \dots & X_{1K}^n & \vline & \dots & \vline & X_{p1}^n & \dots & X_{pK}^n \\ 
   \end{bmatrix}.
 \end{multline*}
 
@@ -184,7 +184,7 @@ by regressing  on $\bX_{\backslash  j}$. In matrix  form, this  can be
 written as the optimization problem
 \begin{equation}
   \label{eq:multi_penalized}
-  \arg  \min_{\bB_j  \in  \mathbb{R}}  J(\mathbf{B_j}),  \qquad
+  \arg  \min_{\bB_j  \in  \mathbb{R}}  J(\bB_j),  \qquad
   J(\bB_j) = \frac{1}{2n} \left\|
     \bX_j - \bX_{\backslash j}\bB_j\right\|_F^2 +
   \lambda \ \Omega(\bB_j),
@@ -221,20 +221,5 @@ where  $\bS_{ij}\in\mathcal{M}_{KK}$ is  a  $K\times K$  block in  the
 empirical covariance matrix $\bS_n  = n^{-1} \bX^\top\bX$, which shows
 the  same block-wise  decomposition as  $\bSigma$ or  $\bTheta$.  This
 paves  the way  for  an optimization  algorithm like  block-coordinate
-descent which we implemented, although we omit details here.
-
-% At the time we were working on this model, another idea that we had in
-% mind --- although we  did not push too far --- was  to propose a penalty
-% based  upon the  nuclear norm  $\|\bA\|_\star =  \sum_j \nu_j$,  where
-% $(\nu_1, \dots,\nu_p)$ is the vector of singular values of $\bA$. This
-% somewhat penalizes the rank of a  matrix, which would be desirable for
-% matrix $\bTheta_{ij}$ when many attributes are shared between $(i,j)$.
-% We thus might define a penalty  on $\invcov$ in place of $\bB_j$, with
-% something like
-% \begin{equation}
-%   \label{eq:penalty_rank_variate}
-%   \Omega_1(\mathbf{B}_j)  =   \sum_{i  \in   \mathcal{P}\backslash  j}
-%   \|\invcov_{ij} \|_\star.
-% \end{equation}
-% However, this idea remains only at the feasible stage for now.
+descent which we implemented, although we omit details here. 
 

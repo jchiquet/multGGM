@@ -34,12 +34,12 @@ zero  conditional  covariance $\textrm{cov}(X_i,X_j  |  X_{\mathcal{P}
 which  we  denote  by  $\rho_{ij}$,  the  latter  being  a  normalized
 expression of the former.
 
-Concretely, the  inference of a GGM  is based upon a  classical result
-originally emphasized in  \cite{1972_Biometrics_Dempster} stating that
-partial  correlations $\rho_{ij}$  are  actually  proportional to  the
-corresponding entries  in the \emph{inverse} of  the covariance matrix
-$\covm^{-1}  =   \invcov$,  also  known  as   the  \emph{concentration
-  matrix}. More precisely, we have
+Concretely, the inference of a GGM is based upon a classical result
+originally emphasized in \cite{1972_Biometrics_Dempster} stating that
+partial correlations $\rho_{ij}$ are actually proportional to the
+corresponding entries in the \emph{inverse} of the covariance matrix
+$\covm^{-1} = \invcov$, also known as the \emph{concentration} (or
+\emph{precision}) matrix. More precisely, we have
 \begin{equation}
   \label{eq:parcor2invcov}
   \rho_{ij}      =  -\invcov_{ij}      /
@@ -62,22 +62,25 @@ entries  of  $\invcov$  is  equivalent   to  inferring  the  graph  of
 conditional dependencies  $\graph$, and the correct  identification of
 nonzero entries is the main issue in this framework.
 
-\paragraph*{Maximum Likelihood inference.}  GGMs  fall into the family
-of  exponential  models  for  which   the  whole  range  of  classical
-statistical tools applies.  As soon as  the sample size $n$ is greater
-than  the number  $p$ of  variables,  the likelihood  admits a  unique
-maximum  over  $\mathcal{S}_{p}^+$,   defining  a  maximum  likelihood
-estimator  (MLE): suppose  we observe  a sample  $\set{X^1,\dots,X^n}$
-composed of $n$  i.i.d.  copies of $X$, stored  row-wise once centered
-in a matrix $\bX \in \Rset^{n\times  p}$ such that $(X^i)^\top$ is the
-$i$th row  of $\bX$.   The empirical covariance  matrix is  denoted by
-$\empcov   =  \mathbf{X}^\intercal   \mathbf{X}/n$.   Maximizing   the
-likelihood is equivalent to
+\paragraph*{Maximum Likelihood inference.}  GGMs fall into the family
+of exponential models for which the whole range of classical
+statistical tools applies.  As soon as the sample size $n$ is greater
+than the number $p$ of variables, the likelihood admits a unique
+maximum over $\mathcal{S}_{p}^+$, defining a maximum likelihood
+estimator (MLE): suppose we observe a sample $\set{X^1,\dots,X^n}$
+composed of $n$ i.i.d.  copies of $X$, stored row-wise once centered
+in a matrix $\bX \in \Rset^{n\times p}$ such that $(X^i)^\top$ is the
+$i$th row of $\bX$.  The empirical covariance matrix is denoted by
+$\empcov = \mathbf{X}^\intercal \mathbf{X}/n$. Let $\det(M)$ and
+$\trace(M)$ be the determinant and the trace of a matrix $M$.
+Maximizing the likelihood is equivalent to
 \begin{equation}
 \label{eq:MLE_GGM}
 \widehat{\invcov}^{\text{mle}} = \argmax_{\invcov  \in \mathcal{S}_p^+}\quad
-\log \det(\invcov) - \trace(\invcov \empcov).
+\log \det(\invcov) - \trace(\invcov \empcov),
 \end{equation}
+
+
 When $n>p$, Problem \eqref{eq:MLE_GGM}  admits a unique solution equal
 to  $\empcov$.   The  scaled  empirical  covariance  matrix  $\empcov$
 follows  a  Wishart  distribution  while  its  inverse  $\empcov^{-1}$
@@ -137,20 +140,20 @@ computationally intensive $\ell_0$-regularized problem:
   \label{eq:ell0}
 \end{equation}
 
-Problem \eqref{eq:ell0} achieves a  trade-off between the maximization
-of  the likelihood  and  the sparsity  of the  graph  within a  single
-optimization problem.  The  penalty term can also be  interpreted as a
-log prior  on the coefficients in  a Bayesian perspective. BIC  or AIC
-criteria  are special  cases  of such  $\ell_0$ regularized  problems,
-except  that the  maximization is  made  upon a  restricted subset  of
-candidates  $\{\tilde{\Theta}_1,\dots,   \tilde{\Theta}_m\}$  and  the
-choice of  $\lambda$ is fixed ($\log(n)$  for BIC and $1/2$  for AIC).
-Actually solving \eqref{eq:ell0} would  require the exploration of all
-possible $2^p$ graphs.   On the contrary, by  preserving the convexity
-of the optimization problem,  $\ell_1$-regularization paves the way to
-fast  algorithms.   For  the  price  of  a  little  bias  on  all  the
-coefficients,  we  get  to  shrink some  coefficients  to  exactly  0,
-operating  selection and  estimation in  one single  step as  hoped in
+Problem \eqref{eq:ell0} achieves a trade-off between the maximization
+of the likelihood and the sparsity of the graph within a single
+optimization problem.  The penalty term can also be interpreted as a
+log prior on the coefficients in a Bayesian perspective. BIC or AIC
+criteria are special cases of such $\ell_0$ regularized problems,
+except that the maximization is made upon a restricted subset of
+candidates $\{\tilde{\Theta}_1,\dots, \tilde{\Theta}_m\}$ and the
+choice of $\lambda$ is fixed ($\log(n)$ for BIC and $2$ for AIC).
+Actually solving \eqref{eq:ell0} would require the exploration of all
+possible $2^{p(p-1)/2}$ graphs.  On the contrary, by preserving the
+convexity of the optimization problem, $\ell_1$-regularization paves
+the way to fast algorithms.  For the price of a little bias on all the
+coefficients, we get to shrink some coefficients to exactly 0,
+operating selection and estimation in one single step as hoped in
 Problem \eqref{eq:ell0}.
 
 \paragraph*{Graphical-Lasso.}    The   criterion  optimized   by   the
@@ -394,7 +397,7 @@ used  to  adjust the  tendency  of  the  usual  BIC --  recovered  for
 $\gamma=0$ --  to choose overly  dense graphs in  the high-dimensional
 setting.      Further     justification     can    be     found     in
 \cite{foygel2010extended}. A competing approach, designed to compare a
-family  of GGM  -- possibly  inferred  with different  methods --,  is
+family  of GGMs -- possibly  inferred  with different  methods --,  is
 GGMSelect \cite{2012_SAGMB_Giraud,giraud2008estimation}.
 
 Another possibility is to rely on resampling/subsampling procedures to
