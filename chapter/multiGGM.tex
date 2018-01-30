@@ -37,8 +37,9 @@ sparse GGMs to sparse \emph{multiattribute} GGMs.
     (rna) edge [bend left, ->] node[below] {\textcolor{mblue}{regulates}} ($(rna.west) -(15mm,0)$);
   \end{tikzpicture}    
   \caption{Basic example of a multiattribute network in genomics:
-    activity  of a  gene  can  be measured  at  the transcriptomic  and
-    proteomic levels, and gene regulation affected accordingly}
+    activity of a gene can be measured at the transcriptomic and
+    proteomic levels, and gene regulation affected accordingly (TF =
+    Transcription Factor; Enz. = Enzyme).}
 \label{fig:central_dogma}
 \end{figure}
 
@@ -51,7 +52,7 @@ various scales or locations of the cell.  Consider for instance the
 simplifying -- still hopefully didactic -- central dogma of molecular
 biology, sketched in Figure \ref{fig:central_dogma}: basically,
 expression of a gene encoding for a protein can be measured either at
-the transcriptome level, in terms of its quantity of mRNA, or at the
+the transcriptome level, in terms of its quantity of RNA, or at the
 protein level, in terms of the concentration of the associated
 protein.  Still, different technologies are used to measure either the
 transcriptome or the proteome, typically, microarray or sequencing
@@ -65,7 +66,7 @@ that molecular profiles combined on the same set of biological samples
 can be \textit{synergistic}, in order to identify a ``consensus'' and
 hopefully more robust network.
 
-\paragraph*{multiattribute GGM.}   Let $\mathcal{P}=\{1,\dots,p\}$ be
+\paragraph*{Multiattribute GGM.}   Let $\mathcal{P}=\{1,\dots,p\}$ be
 a  set  of  variables  of  interest, each  of  them  having  some  $K$
 attributes.    Consider  the   random   vector  $X   =  (X_1,   \dots,
 X_p)^\intercal$  such  as  $X_i  =(X_{i1},\dots,X_{iK})^\intercal  \in
@@ -86,17 +87,17 @@ matrices defined block-wise
 \end{bmatrix}, \quad \bSigma_{ij}, \invcov_{ij}\in \mathcal{M}_{K,K},
 \ \forall (i,j)\in\mathcal{P}^2,
 \]
-where $\mathcal{M}_{a,b}$ is the set  of real-valued matrices with $a$
-rows, $b$ columns.   Such a multiattribute framework  has been studied
-in \cite{katenka2012inference} with a reconstruction method based upon
-canonical  correlations in  order to  test dependencies  between pairs
-$(i,j)$ at the attribute level  using covariance.  Here, we propose to
-rely on partial  correlations in a multivariate  framework rather than
-(canonical)  correlations   to  describe  relationships   between  the
-features, and  thus extend  GGM to  a multiattribute  framework.  The
-objective   is  to   define   a  ``canonical''   version  of   partial
-correlations.      In    our     setting,    the     target    network
-$\graph=(\mathcal{P},\mathcal{E})$  is  defined  as  the  multivariate
+where $\mathcal{M}_{a,b}$ is the set of real-valued matrices with $a$
+rows, $b$ columns.  Such a multiattribute framework has been studied
+in \citet{katenka2012inference} with a reconstruction method based
+upon canonical correlations in order to test dependencies between
+pairs $(i,j)$ at the attribute level using covariance.  Here, we
+propose to rely on partial correlations in a multivariate framework
+rather than (canonical) correlations to describe relationships between
+the features, and thus extend GGM to a multiattribute framework.  The
+objective is to define a ``canonical'' version of partial
+correlations.  In our setting, the target network
+$\graph=(\mathcal{P},\mathcal{E})$ is defined as the multivariate
 analog of the conditional graph for univariate GGM, that is
 \begin{equation}
   \label{eq:multi_net}
