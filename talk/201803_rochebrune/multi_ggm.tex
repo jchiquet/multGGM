@@ -1,0 +1,164 @@
+\section{Sparse multi-attribute GGM}
+
+\begin{frame}
+  \frametitle{Multiattribute GGM}
+
+    Consider e.g. some $p$ genes of interest and the $K=2$ omic experiments
+    \begin{enumerate}
+    \item $X_{i1}$ is the expression profile of gene $i$ (transcriptomic data),
+    \item $X_{i2}$ is the corresponding protein concentration (proteomic data).
+    \end{enumerate}
+
+    \vfill
+
+  \begin{block}{Define a block-wise precision matrix}
+      \vspace{-.25cm}
+      \begin{itemize}
+      \item  $X =  (X_1,  \dots,  X_p)^T \sim  \mathcal{N}(\mathbf{0},
+        \bSigma)$ in $\Rset^{pK}$,
+      \item $X_i=(X_{i1},\dots,X_{iK})^\intercal \in \mathbb{R}^K$.
+      \end{itemize}
+      \[
+      \bTheta = \bSigma^{-1} = \begin{bmatrix}
+        \bTheta_{11} & & \bTheta_{1p} \\
+        & \ddots & \\
+        \bTheta_{p1} & & \bTheta_{pp} \\
+      \end{bmatrix}, \qquad  \bTheta_{ij} \in \mathcal{M}_{K,K},
+      \ \forall (i,j)\in\mathcal{P}^2.
+      \]
+    \end{block}
+
+    \vfill
+
+    \begin{beamerboxesrounded}[upper=sur:head,lower=sur:bloc,shadow=true]{Graphical Interpretation}
+      Define  $\mathcal{G}=(\mathcal{P},\mathcal{E})$   as  \alert{the
+        multivariate analogue} of the {\it conditional graph}:
+      \vspace{-.25cm}
+      \begin{equation*}
+        (i,j)\in    \mathcal{E}    \Leftrightarrow    \bTheta_{ij}    \ne
+        \mathbf{0}_{KK}.
+      \end{equation*}
+    \end{beamerboxesrounded}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Multiattribute GGM as multivariate regression}
+
+  \begin{block}{Multivariate analysis view point}
+    Straightforward algebra and we have
+    \begin{equation*}
+      \label{eq:condK}
+      X_j \, |\,  X_{\backslash j}  = x \sim  \mathcal{N}(- \invcov_{jj}^{-1}\invcov_{j
+        \backslash j} x , \invcov_{ii}^{-1})\enskip.
+    \end{equation*}
+    or   equivalently,    letting   $\displaystyle    \mathbf{B}_j^T   =
+    -\invcov_{jj}^{-1} \invcov_{i\backslash j}$,
+    \begin{equation*}
+      \label{eq:condK}
+      X_j \, |\, X_{\backslash j} = \mathbf{B}_j^T X_{\backslash j} +
+      \boldsymbol\varepsilon_j \quad \boldsymbol\varepsilon_j
+      \sim \mathcal{N}(\mathbf{0},\invcov_{ii}^{-1}), \quad \boldsymbol\varepsilon_j \perp X.
+    \end{equation*}
+  \end{block}
+
+    \begin{colormixin}{60!white}
+      \begin{block}{Remembering the univariate case?}
+        \[
+        X_j   |    X_{   \setminus    j}   =   -    \sum_{\alert{k   \in
+            \text{neighbors}(j)}} \frac{\invcov_{jk}}{\invcov{jj}}  X_j +
+        \varepsilon_j,\quad              \varepsilon_j              \sim
+        \mathcal{N}(0,\invcov_{jj}^{-1}), \quad \varepsilon_j \perp X.
+        \]
+      \end{block}
+    \end{colormixin}
+\end{frame}
+
+\begin{frame}
+  \frametitle{A matter of notation\dots I}
+  \framesubtitle{Matrix of regression coefficients}
+  
+ $\mathbf{B}_j\in\mathcal{M}_{(p-1)K,K}$ is defined block-wise
+  \begin{equation*}
+  \mathbf{B}_j = \begin{bmatrix}
+    \mathbf{B}_j^{(1)} \\ \hline
+    \vdots \\ \hline
+    \mathbf{B}_j^{(j-1)} \\ 
+    \mathbf{B}_j^{(j+1)} \\ 
+    \vdots \\ \hline
+    \mathbf{B}_j^{(p)} \\ 
+  \end{bmatrix} = - \begin{bmatrix}
+    \invcov_{j1} \\ \hline
+    \vdots \\ \hline
+    \invcov_{j(j-1)} \\ 
+    \invcov_{j(j+1)} \\ 
+    \vdots \\ \hline
+    \invcov_{j(p)} \\ 
+  \end{bmatrix}^\top \times \invcov_{jj}^{-1},
+\end{equation*}
+ \rsa the $K\times K$  matrix  $\mathbf{B}_j^{(i)}$ links attributes of variables $(i,j)$.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{A matter of notation\dots II}
+  \framesubtitle{Data matrix}
+
+  Consider an i.i.d.  sample $\{X^\ell\}_{\ell=1}^n$ of $X$ such that
+   each attribute is observed $n$ times for the $p$ variables
+
+  \begin{itemize}
+    \item $\bx^\ell$ is a $pK$-size row vector
+    \item $\bX_j \in \mathcal{M}_{n,K}$ contains the data related to variable $j$ 
+    \item $\bX$ is the full data matrix in $\mathcal{M}_{n,pK}$
+  \end{itemize}
+
+\begin{multline*}
+  \mathbf{X} = \begin{bmatrix}
+    \mathbf{x}^1 \\ \hline
+    \vdots \\\hline
+    \mathbf{x}^n \\
+  \end{bmatrix}
+  = \begin{bmatrix}
+    \mathbf{X}_1 & \dots & \mathbf{X}_p \\
+  \end{bmatrix} \\
+  = \begin{bmatrix}
+    X_{11}^1 & \dots & X_{1K}^1 & \vline & \dots & \vline & X_{p1}^1 & \dots & X_{pK}^1 \\ \hline
+    \vdots & & \vdots & \vline & \dots & \vline & & & \\ \hline
+    X_{11}^n & \dots & X_{1K}^n & \vline & \dots & \vline & X_{p1}^n & \dots & X_{pK}^n \\ 
+  \end{bmatrix}.
+\end{multline*}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Multivariate neighborhood selection} 
+
+  \begin{block}{The penalized multivariate regression approach}
+    For each node /gene, recover its neighborhood by solving 
+    \begin{equation*}
+      \arg  \min_{\mathbf{B}_j  \in  \mathcal{M}_{(p-1)K,K}}  \frac{1}{2n} \left\|
+        \bX_j - \bX_{\backslash j}\bB_j\right\|_F^2 +
+      \lambda \Omega(\bB_j),
+    \end{equation*}
+  \end{block}
+  
+  \vfill
+  
+  \begin{block}{Choice of penalty}
+    Group-based   penalty   to   activate  the   set   of   attributes
+    simultaneously on a given link:
+    \begin{equation*}
+      \Omega(\bB_j) =       \sum_{k \neq j}  \|\bB_j^{(k)}\|  \enskip  ,
+      \quad \bB_j^{(k)} \in \mathcal{M}_{KK}
+    \end{equation*}
+    \begin{itemize}
+    \item  \alert{$\|M\|=   \|M\|_F=\left(  \sum_{i,j}  M_{ij}^2\right)^{1/2}$,
+        the Frobenius norm},
+    \item  $\|M\|=  \|M\|_\infty=  \max_{i,j}{|M_{ij}|}$, the  sup  norm
+      (shared magnitude),
+    \item $\|M\|= \|M\|_\star=\sum \mathrm{eig}(M)$, the nuclear norm
+      (rank penalty).
+    \end{itemize}      
+  \end{block}
+\end{frame}
+

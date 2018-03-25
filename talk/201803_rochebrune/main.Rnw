@@ -1,0 +1,139 @@
+\documentclass[10pt, c, xcolor=x11names]{beamer}
+
+\usepackage[backend=bibtex,style=authoryear]{biblatex}
+\addbibresource{../chapter/biblio.bib} 
+
+\usepackage{tikz}
+\usetikzlibrary{calc,shapes,backgrounds,arrows,automata,shadows,positioning}
+\tikzstyle{every state}=[fill=red,draw=none,scale=0.7,font=\small,text=white]
+\tikzstyle{every edge}=[-,shorten >=1pt,auto,thin,draw]
+\tikzstyle{alertstate}=[fill=bleu]
+
+\newcommand{\invcov}{\bTheta}
+\newcommand{\covm}{\bSigma}
+\newcommand{\empcov}{\bS_n}
+\newcommand{\tildeempcov}{\tilde{\bS}_n}
+\newcommand{\barempcov}{\bar{\bS}_n}
+
+<<echo=FALSE>>=
+rm(list = ls())
+@
+
+<<preamble, child='preamble.Rnw'>>=
+@
+
+\def\mytitle{A multi-attribute Gaussian graphical model for inferring multiscale regulatory networks}
+\def\mysubtitle{An application in breast cancer}
+\def\coauthors{\normalsize joint work with Martina Sundqvist, Guillem Rigaill \\ (original ideas with C. Ambroise, E. kolazcyk) }
+\def\place{Statistiques aux Sommets, Rochebrune}
+\def\thedate{2018, March the 29th}
+
+\def\frontreference{
+\begin{scriptsize}
+ \begin{thebibliography}{99}
+    \setbeamertemplate{bibliography item}[article]
+    \bibitem[CRS]{CRS} \textcolor{black}{J.C., G. Rigaill, M. Sundqvist},
+    \newblock Book on Gene Regulatory Networks: Methods and Protocols, Springer
+    \newblock Editors: Guido Sanguinetti, PhD and Vân Anh Huynh-Thu, PhD
+
+  \end{thebibliography}
+
+  \defbeamertemplate{bibliography item}{package}{\pgfuseimage{computer}}
+  \setbeamertemplate{bibliography item}[package]
+
+  \smallskip
+
+  \begin{thebibliography}{99}
+  \bibitem[multiGGM]{multiGGM} \textcolor{black}{multGGM package, development version on github}
+    \newblock \texttt{devtools::install\_github("jchiquet/multGGM/multivarNetwork")}
+  \end{thebibliography}
+\end{scriptsize}
+
+\begin{tikzpicture}[remember picture,overlay]
+  \node [xshift=1cm,yshift=5.5cm] at (current page.south west)    {\includegraphics[height=2cm, keepaspectratio]{martina}};
+  \node [xshift=-1cm,yshift=5.5cm] at (current page.south east)    {\includegraphics[height=2cm, keepaspectratio]{guillem}};
+\end{tikzpicture}
+}
+\begin{document}
+
+\dotitlepage
+
+\begin{frame}
+  \frametitle{Why multi-attribute networks in genomics?}
+
+  \definecolor{genecolor}{RGB}{94,135,173}
+  \begin{tikzpicture}
+    \tikzstyle{every state}=[fill=orange!70!white,draw=none,text=white]
+      
+    \node[state] (dna) at (0,0) {DNA};
+    \node[state] (rna) at (4,0) {RNA};
+    \node[state] (proteins) at (8,0) {Proteins};
+    \node[state] (tf) at (6,-1.2) {TF};
+    \node[state] (enzyme) at (9,-2) {Enz.};
+    \node[draw=none,text=white,fill=genecolor, scale=0.75] (gene) at (0.5,0.5) {genes};
+    
+    \path
+    (dna) edge [->] node[above] {transcription} (rna) 
+    (rna) edge [->] node[above] {translation} (proteins) 
+    (dna) edge [loop left,->] node[below=10pt] {replication} (dna) 
+    (proteins) edge [->] node {} (tf) 
+    (proteins) edge [->] node {} (enzyme) 
+    (proteins) edge [loop right, ->] node[above left=10pt] {\textcolor{red}{may bind}} (proteins) 
+    (tf) edge [bend left, ->] node[midway] {\textcolor{genecolor}{regulates}} ($(rna.west) -(5mm,0)$)
+    (rna) edge [-,line width=2pt,draw=white,bend left] ($(rna.west) -(15mm,0)$)
+    (rna) edge [bend left, ->] node {\textcolor{genecolor}{regulates}} ($(rna.west) -(15mm,0)$);
+  \end{tikzpicture}    
+
+  \vspace{-.5cm}
+
+  \begin{block}{Data integration}
+    \begin{itemize}
+    \item  Omic technologies  can  profile  cells at  \alert{different
+        levels}: DNA, RNA, protein, chromosomal, and functional.
+    \item \alert{multiple} molecular  profiles \alert{combined} on the
+      same set of biological samples can be \textit{synergistic}.
+    \end{itemize}
+  \end{block}
+  
+
+  % \vfill
+
+  % \textcolor{mblue!75!black}{Remark}: \textit{a close independent work of Kolar
+  %   and Xing appeared late 2012\dots}
+
+\end{frame}
+
+\include{background_ggm}
+
+\include{multi_ggm}
+
+\include{numerical_exp}
+
+\include{applications}
+
+
+\frame{ \frametitle{Conclusion}
+
+  \paragraph{Perspectives}
+  \begin{itemize}
+   \item Validation?
+   \item Other penalties?
+   \item Covariates?
+  \end{itemize}
+  \medskip
+
+  \begin{block}{\Large\alert{Thanks  to you}  for  your patience  and to  my
+    co-workers}
+   \end{block}
+}
+
+ 
+% \begin{frame}[allowframebreaks]
+%  \frametitle{References}
+%   \begin{tiny}
+%   \printbibliography
+%   \end{tiny}
+% \end{frame}
+
+\end{document}
+

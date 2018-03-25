@@ -1,0 +1,252 @@
+\documentclass[10pt, c, xcolor=x11names]{beamer}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+\usepackage[backend=bibtex,style=authoryear]{biblatex}
+\addbibresource{../chapter/biblio.bib} 
+
+\usepackage{tikz}
+\usetikzlibrary{calc,shapes,backgrounds,arrows,automata,shadows,positioning}
+\tikzstyle{every state}=[fill=red,draw=none,scale=0.7,font=\small,text=white]
+\tikzstyle{every edge}=[-,shorten >=1pt,auto,thin,draw]
+\tikzstyle{alertstate}=[fill=bleu]
+
+\newcommand{\invcov}{\bTheta}
+\newcommand{\covm}{\bSigma}
+\newcommand{\empcov}{\bS_n}
+\newcommand{\tildeempcov}{\tilde{\bS}_n}
+\newcommand{\barempcov}{\bar{\bS}_n}
+
+
+
+
+% THEME BEAMER
+
+\usetheme{teaching}
+\usefonttheme[onlymath]{serif}
+\graphicspath{{figures/}}
+
+\usepackage{ulem}
+\usepackage{multirow}
+\usepackage{tikz}
+
+
+\pgfdeclareimage[width=.5cm]{computer}{computer.png}
+
+\title{\mytitle}
+\subtitle{\mysubtitle}
+
+\author{\small Julien Chiquet, MIA Paris}
+\institute{\coauthors}
+\date{\place,~\thedate}
+
+
+
+
+
+\AtBeginSection{
+  \begin{frame}<beamer>
+    \frametitle{Outline}
+    \framesubtitle{\insertpart}
+    \tableofcontents[currentsection,currentsubsection, subsectionstyle=show/shaded/hide]  
+  \end{frame}
+}
+
+\AtBeginSubsection{
+  \begin{frame}<beamer>
+    \frametitle{Outline}
+    \framesubtitle{\insertpart}
+    \tableofcontents[currentsection,currentsubsection, subsectionstyle=show/shaded/hide]  
+  \end{frame}
+}
+
+\AtBeginSubsubsection{
+  \begin{frame}<beamer>
+    \frametitle{Outline}
+    \framesubtitle{\insertpart}
+    \tableofcontents[currentsection,currentsubsection, subsectionstyle=show/shaded/hide]  
+  \end{frame}
+}
+
+\newcommand{\dotitlepage}{%
+  \begin{frame}
+    \titlepage
+    \vfill
+    \frontreference
+    \vfill
+    \includegraphics[width=2cm]{logo_inra} \hfill
+    \includegraphics[width=2.5cm]{logo_agroparistech}
+  \end{frame}
+}
+
+\newcommand{\dotoc}{%
+  \begin{frame}
+    \frametitle{Outline}
+    \tableofcontents[currentsection,sectionstyle=show/show,subsectionstyle=hide]
+  \end{frame}
+}
+
+\def\mytitle{A multi-attribute Gaussian graphical model for inferring multiscale regulatory networks}
+\def\mysubtitle{An application in breast cancer}
+\def\coauthors{\normalsize joint work with Martina Sundqvist, Guillem Rigaill \\ (original ideas with C. Ambroise, E. kolazcyk) }
+\def\place{Statistiques aux Sommets, Rochebrune}
+\def\thedate{2018, March the 29th}
+
+\def\frontreference{
+\begin{scriptsize}
+ \begin{thebibliography}{99}
+    \setbeamertemplate{bibliography item}[article]
+    \bibitem[CRS]{CRS} \textcolor{black}{J.C., G. Rigaill, M. Sundqvist},
+    \newblock Book on Gene Regulatory Networks: Methods and Protocols, Springer
+    \newblock Editors: Guido Sanguinetti, PhD and Vân Anh Huynh-Thu, PhD
+
+  \end{thebibliography}
+
+  \defbeamertemplate{bibliography item}{package}{\pgfuseimage{computer}}
+  \setbeamertemplate{bibliography item}[package]
+
+  \smallskip
+
+  \begin{thebibliography}{99}
+  \bibitem[multiGGM]{multiGGM} \textcolor{black}{multGGM package, development version on github}
+    \newblock \texttt{devtools::install\_github("jchiquet/multGGM/multivarNetwork")}
+  \end{thebibliography}
+\end{scriptsize}
+
+\begin{tikzpicture}[remember picture,overlay]
+  \node [xshift=1cm,yshift=5.5cm] at (current page.south west)    {\includegraphics[height=2cm, keepaspectratio]{martina}};
+  \node [xshift=-1cm,yshift=5.5cm] at (current page.south east)    {\includegraphics[height=2cm, keepaspectratio]{guillem}};
+\end{tikzpicture}
+}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\dotitlepage
+
+\begin{frame}
+  \frametitle{Why multi-attribute networks in genomics?}
+
+  \definecolor{genecolor}{RGB}{94,135,173}
+  \begin{tikzpicture}
+    \tikzstyle{every state}=[fill=orange!70!white,draw=none,text=white]
+      
+    \node[state] (dna) at (0,0) {DNA};
+    \node[state] (rna) at (4,0) {RNA};
+    \node[state] (proteins) at (8,0) {Proteins};
+    \node[state] (tf) at (6,-1.2) {TF};
+    \node[state] (enzyme) at (9,-2) {Enz.};
+    \node[draw=none,text=white,fill=genecolor, scale=0.75] (gene) at (0.5,0.5) {genes};
+    
+    \path
+    (dna) edge [->] node[above] {transcription} (rna) 
+    (rna) edge [->] node[above] {translation} (proteins) 
+    (dna) edge [loop left,->] node[below=10pt] {replication} (dna) 
+    (proteins) edge [->] node {} (tf) 
+    (proteins) edge [->] node {} (enzyme) 
+    (proteins) edge [loop right, ->] node[above left=10pt] {\textcolor{red}{may bind}} (proteins) 
+    (tf) edge [bend left, ->] node[midway] {\textcolor{genecolor}{regulates}} ($(rna.west) -(5mm,0)$)
+    (rna) edge [-,line width=2pt,draw=white,bend left] ($(rna.west) -(15mm,0)$)
+    (rna) edge [bend left, ->] node {\textcolor{genecolor}{regulates}} ($(rna.west) -(15mm,0)$);
+  \end{tikzpicture}    
+
+  \vspace{-.5cm}
+
+  \begin{block}{Data integration}
+    \begin{itemize}
+    \item  Omic technologies  can  profile  cells at  \alert{different
+        levels}: DNA, RNA, protein, chromosomal, and functional.
+    \item \alert{multiple} molecular  profiles \alert{combined} on the
+      same set of biological samples can be \textit{synergistic}.
+    \end{itemize}
+  \end{block}
+  
+
+  % \vfill
+
+  % \textcolor{mblue!75!black}{Remark}: \textit{a close independent work of Kolar
+  %   and Xing appeared late 2012\dots}
+
+\end{frame}
+
+\include{background_ggm}
+
+\include{multi_ggm}
+
+\include{numerical_exp}
+
+\include{applications}
+
+
+\frame{ \frametitle{Conclusion}
+
+  \paragraph{Perspectives}
+  \begin{itemize}
+   \item Validation?
+   \item Other penalties?
+   \item Covariates?
+  \end{itemize}
+  \medskip
+
+  \begin{block}{\Large\alert{Thanks  to you}  for  your patience  and to  my
+    co-workers}
+   \end{block}
+}
+
+ 
+% \begin{frame}[allowframebreaks]
+%  \frametitle{References}
+%   \begin{tiny}
+%   \printbibliography
+%   \end{tiny}
+% \end{frame}
+
+\end{document}
+
