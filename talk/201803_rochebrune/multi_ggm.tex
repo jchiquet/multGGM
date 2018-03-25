@@ -19,11 +19,11 @@
       \item $X_i=(X_{i1},\dots,X_{iK})^\intercal \in \mathbb{R}^K$.
       \end{itemize}
       \[
-      \bTheta = \bSigma^{-1} = \begin{bmatrix}
-        \bTheta_{11} & & \bTheta_{1p} \\
+      \invcov = \bSigma^{-1} = \begin{bmatrix}
+        \invcov_{11} & & \invcov_{1p} \\
         & \ddots & \\
-        \bTheta_{p1} & & \bTheta_{pp} \\
-      \end{bmatrix}, \qquad  \bTheta_{ij} \in \mathcal{M}_{K,K},
+        \invcov_{p1} & & \invcov_{pp} \\
+      \end{bmatrix}, \qquad  \invcov_{ij} \in \mathcal{M}_{K,K},
       \ \forall (i,j)\in\mathcal{P}^2.
       \]
     \end{block}
@@ -35,7 +35,7 @@
         multivariate analogue} of the {\it conditional graph}:
       \vspace{-.25cm}
       \begin{equation*}
-        (i,j)\in    \mathcal{E}    \Leftrightarrow    \bTheta_{ij}    \ne
+        (i,j)\in    \mathcal{E}    \Leftrightarrow    \invcov_{ij}    \ne
         \mathbf{0}_{KK}.
       \end{equation*}
     \end{beamerboxesrounded}
@@ -138,7 +138,7 @@
     \begin{equation*}
       \arg  \min_{\mathbf{B}_j  \in  \mathcal{M}_{(p-1)K,K}}  \frac{1}{2n} \left\|
         \bX_j - \bX_{\backslash j}\bB_j\right\|_F^2 +
-      \lambda \Omega(\bB_j),
+      \lambda \ \text{Pen}(\bB_j),
     \end{equation*}
   \end{block}
   
@@ -148,7 +148,7 @@
     Group-based   penalty   to   activate  the   set   of   attributes
     simultaneously on a given link:
     \begin{equation*}
-      \Omega(\bB_j) =       \sum_{k \neq j}  \|\bB_j^{(k)}\|  \enskip  ,
+      \text{Pen}(\bB_j) =       \sum_{k \neq j}  \|\bB_j^{(k)}\|  \enskip  ,
       \quad \bB_j^{(k)} \in \mathcal{M}_{KK}
     \end{equation*}
     \begin{itemize}

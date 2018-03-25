@@ -64,7 +64,7 @@
       \bX_j | \bX_{ \setminus j} =
        \sum_{k \in \text{ne(j)}} \beta_{jk} \bX_k + \varepsilon_j
       \quad         \text{with         }         \beta_{jk}         =
-      -\frac{\Theta_{jk}}{\Theta_{jj}}.
+      -\frac{\invcov_{jk}}{\invcov_{jj}}.
     \end{equation*}
   \end{block}
 
@@ -174,8 +174,8 @@
         (Peng 2009; Khare 2014 )}<2-> 
       \vspace*{-2em}
       \begin{equation*}
-        \left(\widehat{\boldsymbol\rho}_\lambda^{\text{space}}, \mathrm{diag}({\boldsymbol\Theta})\right) =
-        \argmin_{\boldsymbol\rho,\mathrm{diag}({\boldsymbol\Theta})} \frac{1}{2}
+        \left(\widehat{\boldsymbol\rho}_\lambda^{\text{space}}, \mathrm{diag}({\boldsymbol\invcov})\right) =
+        \argmin_{\boldsymbol\rho,\mathrm{diag}({\boldsymbol\invcov})} \frac{1}{2}
         \sum_{j=1}^p \omega_j \left\|
           \bX_j - \sum_{k=1}^p \rho_{jk} \sqrt{\frac{{\invcov}_{kk}}{{\invcov}_{jj}}}
           \bX_k \right\|_{\ell_2}^2 + \lambda\ \| \boldsymbol\rho \|_{\ell_1}
@@ -240,8 +240,8 @@
     \item GGMSelect (Girault \textit{et al}, '12) selects among a family of candidates.
     \item Adapt IC to sparse high dimensional problems, e.g.
     \begin{equation*}
-      \text{EBIC}_\gamma(\widehat{{\boldsymbol\Theta}}_\lambda)  =   -2 \textrm{loglik}
-      (\widehat{{\boldsymbol\Theta}}_\lambda;\bX) + |\mathcal{E}_\lambda| (\log(n) + 4 \gamma \log(p) ).
+      \text{EBIC}_\gamma(\widehat{{\boldsymbol\invcov}}_\lambda)  =   -2 \textrm{loglik}
+      (\widehat{{\boldsymbol\invcov}}_\lambda;\bX) + |\mathcal{E}_\lambda| (\log(n) + 4 \gamma \log(p) ).
     \end{equation*}
     \end{itemize}
   \end{block}

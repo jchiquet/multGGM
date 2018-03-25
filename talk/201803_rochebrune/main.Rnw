@@ -9,7 +9,7 @@
 \tikzstyle{every edge}=[-,shorten >=1pt,auto,thin,draw]
 \tikzstyle{alertstate}=[fill=bleu]
 
-\newcommand{\invcov}{\bTheta}
+\newcommand{\invcov}{\bOmega}
 \newcommand{\covm}{\bSigma}
 \newcommand{\empcov}{\bS_n}
 \newcommand{\tildeempcov}{\tilde{\bS}_n}
