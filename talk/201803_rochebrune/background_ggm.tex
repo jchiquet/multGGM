@@ -18,7 +18,7 @@
     \end{equation*}
   \end{itemize}
 
-  
+
   \begin{block}{Conditional independence structure}
     \vspace{-.5cm}
     \begin{equation*}
@@ -26,7 +26,7 @@
       Y_{\backslash \{i,j\}} \Leftrightarrow \invcov_{ij} = 0.
     \end{equation*}
   \end{block}
-  
+
   \vspace{-.5cm}
   \begin{block}{Graphical interpretation}
     \vspace{-.5cm}
@@ -44,7 +44,7 @@
     \end{center}
   \end{block}
   \vspace{-.5cm}
-  
+
   \rsa Network reconstruction is (roughly) a variable selection problem
 \end{frame}
 
@@ -91,7 +91,7 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Gold standard penalized approaches (1)}
+  \frametitle{Gold standard penalized approaches}
   \framesubtitle{Use $\ell_1$ for both regularizing and promoting \textit{sparsity}}
 
   \begin{overlayarea}{\textwidth}{\textheight}
@@ -107,7 +107,7 @@
 \end{equation*}
     \end{block}
     \vspace*{-1.5em}
-    
+
     \begin{itemize}
     \item[\textcolor{green}{$+$}] symmetric, positive-definite
     \item[\textcolor{red}{$-$}]       solved      by       the
@@ -115,9 +115,9 @@
       \textit{Friedman et al, 2007}).
     \item \texttt{R}-packages \textbf{glasso}, \textbf{quic}, \textbf{huge}.
     \end{itemize}
-    
+
     \vfill
-    
+
     \begin{block}{Neighborhood    Selection   (Meinshausen    \&
         B\"ulhman, 2006)}<2-> \vspace*{-1em}
 \begin{equation*}
@@ -128,7 +128,7 @@
 \end{equation*}
       \vspace*{-1.5em}
     \end{block}
-    
+
     \onslide<2>{
       \begin{itemize}
       \item[\textcolor{red}{$-$}]     not     symmetric,     not
@@ -139,63 +139,63 @@
       \item \texttt{R}-package \textbf{huge}.
       \end{itemize}
     }
-     
-\end{overlayarea}      
+
+\end{overlayarea}
 
 \end{frame}
 
-\begin{frame}
-  \frametitle{Gold standard penalized approaches (2)}
-  \framesubtitle{Use $\ell_1$ for both regularizing and promoting \textit{sparsity}}
-
-  \begin{overlayarea}{\textwidth}{\textheight}
-        
-    \begin{block}{CLIME -- Pseudo-likelihood  (Cai et al., 2011;
-        Yuan, 2010)}<1->
-      \vspace*{-1.5em}
-      \begin{equation*}
-        \widehat{\invcov}^{\text{clime}}_\lambda  = \argmin_{\invcov}
-        \left\|   \invcov \right\|_1 \text{ subjected to }
-        \left\|   \empcov \invcov - \mathbf{I} \right\|_\infty\leq \lambda
-      \end{equation*}
-      \vspace*{-1.5em}
-    \end{block}
-    
-    \begin{itemize}
-    \item[\textcolor{red}{$-$}] not positive-definite
-    \item[\textcolor{green}{$+$}]  $p$ linear  programs easily
-      distributed ($\mathcal{O}(p^2d)$ for $d$ neighbors).
-    \item \texttt{R}-package \textbf{fastclime} (dedictated imp. up to p=6!).
-    \end{itemize}
-
-      \vspace*{-.5em}
-    
-    \begin{block}{Sparse PArtial  Correlation Estimation (SPACE)
-        (Peng 2009; Khare 2014 )}<2-> 
-      \vspace*{-2em}
-      \begin{equation*}
-        \left(\widehat{\boldsymbol\rho}_\lambda^{\text{space}}, \mathrm{diag}({\boldsymbol\invcov})\right) =
-        \argmin_{\boldsymbol\rho,\mathrm{diag}({\boldsymbol\invcov})} \frac{1}{2}
-        \sum_{j=1}^p \omega_j \left\|
-          \bX_j - \sum_{k=1}^p \rho_{jk} \sqrt{\frac{{\invcov}_{kk}}{{\invcov}_{jj}}}
-          \bX_k \right\|_{\ell_2}^2 + \lambda\ \| \boldsymbol\rho \|_{\ell_1}
-      \end{equation*}
-      \vspace*{-1.5em}
-    \end{block}
-    
-    \onslide<2>{
-      \begin{itemize}
-      \item[\textcolor{green}{$+$}]  for  fixed variances,  same
-        cost as neighborhood selection.
-      \item[\textcolor{red}{$-$}]    alternate    procedure    without
-        guarantees on the number of iterates
-      \item \texttt{R}-package \textbf{gconcord}.
-      \end{itemize}
-    }
-      
-\end{overlayarea}      
-
-\end{frame}
+% \begin{frame}
+%   \frametitle{Gold standard penalized approaches (2)}
+%   \framesubtitle{Use $\ell_1$ for both regularizing and promoting \textit{sparsity}}
+%
+%   \begin{overlayarea}{\textwidth}{\textheight}
+%
+%     \begin{block}{CLIME -- Pseudo-likelihood  (Cai et al., 2011;
+%         Yuan, 2010)}<1->
+%       \vspace*{-1.5em}
+%       \begin{equation*}
+%         \widehat{\invcov}^{\text{clime}}_\lambda  = \argmin_{\invcov}
+%         \left\|   \invcov \right\|_1 \text{ subjected to }
+%         \left\|   \empcov \invcov - \mathbf{I} \right\|_\infty\leq \lambda
+%       \end{equation*}
+%       \vspace*{-1.5em}
+%     \end{block}
+%
+%     \begin{itemize}
+%     \item[\textcolor{red}{$-$}] not positive-definite
+%     \item[\textcolor{green}{$+$}]  $p$ linear  programs easily
+%       distributed ($\mathcal{O}(p^2d)$ for $d$ neighbors).
+%     \item \texttt{R}-package \textbf{fastclime} (dedictated imp. up to p=6!).
+%     \end{itemize}
+%
+%       \vspace*{-.5em}
+%
+%     \begin{block}{Sparse PArtial  Correlation Estimation (SPACE)
+%         (Peng 2009; Khare 2014 )}<2->
+%       \vspace*{-2em}
+%       \begin{equation*}
+%         \left(\widehat{\boldsymbol\rho}_\lambda^{\text{space}}, \mathrm{diag}({\boldsymbol\invcov})\right) =
+%         \argmin_{\boldsymbol\rho,\mathrm{diag}({\boldsymbol\invcov})} \frac{1}{2}
+%         \sum_{j=1}^p \omega_j \left\|
+%           \bX_j - \sum_{k=1}^p \rho_{jk} \sqrt{\frac{{\invcov}_{kk}}{{\invcov}_{jj}}}
+%           \bX_k \right\|_{\ell_2}^2 + \lambda\ \| \boldsymbol\rho \|_{\ell_1}
+%       \end{equation*}
+%       \vspace*{-1.5em}
+%     \end{block}
+%
+%     \onslide<2>{
+%       \begin{itemize}
+%       \item[\textcolor{green}{$+$}]  for  fixed variances,  same
+%         cost as neighborhood selection.
+%       \item[\textcolor{red}{$-$}]    alternate    procedure    without
+%         guarantees on the number of iterates
+%       \item \texttt{R}-package \textbf{gconcord}.
+%       \end{itemize}
+%     }
+%
+% \end{overlayarea}
+%
+% \end{frame}
 
 \begin{frame}
   \frametitle{Practical implications of theoretical results}
@@ -230,7 +230,7 @@
 
 \begin{frame}
   \frametitle{Model selection}
-  
+
   \begin{block}{Cross-validation}
     Optimal in terms of \alert{prediction}, not in terms of selection
   \end{block}

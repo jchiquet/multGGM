@@ -1,7 +1,7 @@
 \documentclass[10pt, c, xcolor=x11names]{beamer}
 
 \usepackage[backend=bibtex,style=authoryear]{biblatex}
-\addbibresource{../chapter/biblio.bib} 
+\addbibresource{../chapter/biblio.bib}
 
 \usepackage{tikz}
 \usetikzlibrary{calc,shapes,backgrounds,arrows,automata,shadows,positioning}
@@ -64,25 +64,25 @@ rm(list = ls())
   \definecolor{genecolor}{RGB}{94,135,173}
   \begin{tikzpicture}
     \tikzstyle{every state}=[fill=orange!70!white,draw=none,text=white]
-      
+
     \node[state] (dna) at (0,0) {DNA};
     \node[state] (rna) at (4,0) {RNA};
     \node[state] (proteins) at (8,0) {Proteins};
     \node[state] (tf) at (6,-1.2) {TF};
     \node[state] (enzyme) at (9,-2) {Enz.};
     \node[draw=none,text=white,fill=genecolor, scale=0.75] (gene) at (0.5,0.5) {genes};
-    
+
     \path
-    (dna) edge [->] node[above] {transcription} (rna) 
-    (rna) edge [->] node[above] {translation} (proteins) 
-    (dna) edge [loop left,->] node[below=10pt] {replication} (dna) 
-    (proteins) edge [->] node {} (tf) 
-    (proteins) edge [->] node {} (enzyme) 
-    (proteins) edge [loop right, ->] node[above left=10pt] {\textcolor{red}{may bind}} (proteins) 
+    (dna) edge [->] node[above] {transcription} (rna)
+    (rna) edge [->] node[above] {translation} (proteins)
+    (dna) edge [loop left,->] node[below=10pt] {replication} (dna)
+    (proteins) edge [->] node {} (tf)
+    (proteins) edge [->] node {} (enzyme)
+    (proteins) edge [loop right, ->] node[above left=10pt] {\textcolor{red}{may bind}} (proteins)
     (tf) edge [bend left, ->] node[midway] {\textcolor{genecolor}{regulates}} ($(rna.west) -(5mm,0)$)
     (rna) edge [-,line width=2pt,draw=white,bend left] ($(rna.west) -(15mm,0)$)
     (rna) edge [bend left, ->] node {\textcolor{genecolor}{regulates}} ($(rna.west) -(15mm,0)$);
-  \end{tikzpicture}    
+  \end{tikzpicture}
 
   \vspace{-.5cm}
 
@@ -94,7 +94,7 @@ rm(list = ls())
       same set of biological samples can be \textit{synergistic}.
     \end{itemize}
   \end{block}
-  
+
 
   % \vfill
 
@@ -107,7 +107,8 @@ rm(list = ls())
 
 \include{multi_ggm}
 
-\include{numerical_exp}
+<<numerical_exp, child = "numerical_exp.Rnw">>=
+@
 
 \include{applications}
 
@@ -126,14 +127,6 @@ rm(list = ls())
     co-workers}
    \end{block}
 }
-
- 
-% \begin{frame}[allowframebreaks]
-%  \frametitle{References}
-%   \begin{tiny}
-%   \printbibliography
-%   \end{tiny}
-% \end{frame}
 
 \end{document}
 

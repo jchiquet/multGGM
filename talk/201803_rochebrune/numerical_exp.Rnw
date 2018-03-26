@@ -1,0 +1,114 @@
+\section{Numerical experiments}
+
+\begin{frame}
+  \frametitle{Simulation study: settings}
+
+  \begin{enumerate}
+\item  Draw a $p \times p$ adjacency matrix $\bA$ under Erd\"os-Renyi model.
+\item  Expand $\bA$  to  multivariate space:
+  $$\mathbf{M} = \mathbf{A}  \otimes \mathbb{S} + \mathbf{I}_{p\times K}$$
+  \paragraph{$\mathbb{S}$ is used to consider different scenarios of agreement}
+  \begin{enumerate}[a)]
+  \item $\mathbb{S} = \mathbf{I}_{K,K}$ \\
+    \rsa same intra-attribute network, no inter-attribute interactions
+  \item $\mathbb{S} = \mathbf{I}_{K,K} - \mathbf{1}_{K,K}$ \\
+  \rsa same inter-attribute interactions and no intra-attribute interactions
+  \item $\mathbb{S} = \mathbf{1}_{K,K}$ \\
+    \rsa full agreement between  attributes.
+  \end{enumerate}
+\item $\invcov$ is the nearest a positive definite approximation of $\mathbf{M}$
+\item Control the difficulty with $\gamma>0: \invcov= \invcov+ \gamma I$;
+\item Draw an i.i.d. $n$-size sample $\bX\in\Rset^{n\times pK}$ of
+  $X \sim \mathcal{N} \left( 0,\invcov^{-1} \right) .$
+\end{enumerate}
+
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Example: original graph + intra/inter/full aggrements}
+
+<<r example_bivR_net, echo = FALSE>>=
+library(igraph)
+library(corrplot)
+nNodes <- 5; nEdges <- 5; nAttributes <- 2
+A <- as_adj(sample_gnm(nNodes, nEdges))
+G <- graph_from_adjacency_matrix(A, mode = "undirected")
+S_intra <- diag(nAttributes)
+S_inter <- matrix(1,nAttributes,nAttributes) - diag(nAttributes)
+S_full  <- matrix(1,nAttributes,nAttributes)
+A_intra <- kronecker(A, S_intra)
+A_inter <- kronecker(A, S_inter)
+A_full  <- kronecker(A, S_full )
+G_intra <- graph_from_adjacency_matrix(A_intra, mode = "undirected")
+G_inter <- graph_from_adjacency_matrix(A_inter, mode = "undirected")
+G_full  <- graph_from_adjacency_matrix(A_full , mode = "undirected")
+
+
+V(G_intra)$label <- paste(rep(1:nNodes,each = 2), rep(c("a", "b"), nNodes), sep=".")
+V(G_inter)$label <- paste(rep(1:nNodes,each = 2), rep(c("a", "b"), nNodes), sep=".")
+V(G_full)$label  <- paste(rep(1:nNodes,each = 2), rep(c("a", "b"), nNodes), sep=".")
+
+V(G_intra)$label.color <- "white"
+V(G_inter)$label.color <- "white"
+V(G_full)$label.color  <- "white"
+
+V(G)$size <- 20
+V(G_intra)$size <- 20
+V(G_inter)$size <- 20
+V(G_full)$size  <- 20
+
+V(G_intra)$color <- rep(c("red", "blue"), nNodes)
+V(G_inter)$color <- rep(c("red", "blue"), nNodes)
+V(G_full)$color  <- rep(c("red", "blue"), nNodes)
+
+par(mfrow=c(3,3))
+layout(matrix(c(1,1,1,2,2,2,rep(3:8, each=2)), nrow=3, byrow=TRUE))
+par(mar=c(0.2,0.2,0.2,0.2))
+
+plot(G, layout=layout_in_circle)
+corrplot(as.matrix(A), method = "color", is.corr = FALSE, tl.pos = "td", cl.pos = "n", tl.cex = 0.5, type = "upper")
+
+plot(G_intra, layout=layout_in_circle)
+plot(G_inter, layout=layout_in_circle)
+plot(G_full , layout=layout_in_circle)
+corrplot(as.matrix(A_intra), method = "color", is.corr = FALSE, tl.pos = "td", cl.pos = "n", tl.cex = 0.5, type = "upper")
+corrplot(as.matrix(A_inter), method = "color", is.corr = FALSE, tl.pos = "td", cl.pos = "n", tl.cex = 0.5, type = "upper")
+corrplot(as.matrix(A_full) , method = "color", is.corr = FALSE, tl.pos = "td", cl.pos = "n", tl.cex = 0.5, type = "upper")
+@
+\end{frame}
+
+\begin{frame}
+  \frametitle{Simulation study: evaluation}
+
+  \begin{block}{Competitors}
+  \begin{itemize}
+  \item \texttt{multiattribute}: reconstruct one network with
+   $K$ data sets $\bX^{(1)}, \dots \bX^{(K)}$ all with size
+  $\Rset^{n\times p}$
+
+  \item \texttt{separate}: reconstruct $K$ networks with
+   $K$ data sets $\bX^{(1)}, \dots \bX^{(K)}$ all with size
+  $\Rset^{n\times p}$
+
+  \item the \texttt{merge} variant: reconstruct one network
+    by merging $\bX^{(1)}, \dots \bX^{(K)}$ into a single
+    $\tilde\bX$ data set in $\Rset^{nK \times p}$
+  \end{itemize}
+  \end{block}
+
+  \begin{block}{Performances}
+    Use area under ROC curve (AUC). For the \textit{separate} variant, the retained AUC is the AUC
+    averaged over all attributes.
+  \end{block}
+
+  \rsa Set $p=40$, vary $n, K$ and replicate 100 times
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Simulation study: results}
+
+  \includegraphics[width=\textwidth]{../../chapter/figures/res_simu_new}
+
+\end{frame}

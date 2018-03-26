@@ -51,7 +51,7 @@
 \usepackage{alltt}
 
 \usepackage[backend=bibtex,style=authoryear]{biblatex}
-\addbibresource{../chapter/biblio.bib} 
+\addbibresource{../chapter/biblio.bib}
 
 \usepackage{tikz}
 \usetikzlibrary{calc,shapes,backgrounds,arrows,automata,shadows,positioning}
@@ -177,25 +177,25 @@
   \definecolor{genecolor}{RGB}{94,135,173}
   \begin{tikzpicture}
     \tikzstyle{every state}=[fill=orange!70!white,draw=none,text=white]
-      
+
     \node[state] (dna) at (0,0) {DNA};
     \node[state] (rna) at (4,0) {RNA};
     \node[state] (proteins) at (8,0) {Proteins};
     \node[state] (tf) at (6,-1.2) {TF};
     \node[state] (enzyme) at (9,-2) {Enz.};
     \node[draw=none,text=white,fill=genecolor, scale=0.75] (gene) at (0.5,0.5) {genes};
-    
+
     \path
-    (dna) edge [->] node[above] {transcription} (rna) 
-    (rna) edge [->] node[above] {translation} (proteins) 
-    (dna) edge [loop left,->] node[below=10pt] {replication} (dna) 
-    (proteins) edge [->] node {} (tf) 
-    (proteins) edge [->] node {} (enzyme) 
-    (proteins) edge [loop right, ->] node[above left=10pt] {\textcolor{red}{may bind}} (proteins) 
+    (dna) edge [->] node[above] {transcription} (rna)
+    (rna) edge [->] node[above] {translation} (proteins)
+    (dna) edge [loop left,->] node[below=10pt] {replication} (dna)
+    (proteins) edge [->] node {} (tf)
+    (proteins) edge [->] node {} (enzyme)
+    (proteins) edge [loop right, ->] node[above left=10pt] {\textcolor{red}{may bind}} (proteins)
     (tf) edge [bend left, ->] node[midway] {\textcolor{genecolor}{regulates}} ($(rna.west) -(5mm,0)$)
     (rna) edge [-,line width=2pt,draw=white,bend left] ($(rna.west) -(15mm,0)$)
     (rna) edge [bend left, ->] node {\textcolor{genecolor}{regulates}} ($(rna.west) -(15mm,0)$);
-  \end{tikzpicture}    
+  \end{tikzpicture}
 
   \vspace{-.5cm}
 
@@ -207,7 +207,7 @@
       same set of biological samples can be \textit{synergistic}.
     \end{itemize}
   \end{block}
-  
+
 
   % \vfill
 
@@ -220,7 +220,78 @@
 
 \include{multi_ggm}
 
-\include{numerical_exp}
+
+\section{Numerical experiments}
+
+\begin{frame}
+  \frametitle{Simulation study: settings}
+
+  \begin{enumerate}
+\item  Draw a $p \times p$ adjacency matrix $\bA$ under Erd\"os-Renyi model.
+\item  Expand $\bA$  to  multivariate space:
+  $$\mathbf{M} = \mathbf{A}  \otimes \mathbb{S} + \mathbf{I}_{p\times K}$$
+  \paragraph{$\mathbb{S}$ is used to consider different scenarios of agreement}
+  \begin{enumerate}[a)]
+  \item $\mathbb{S} = \mathbf{I}_{K,K}$ \\
+    \rsa same intra-attribute network, no inter-attribute interactions
+  \item $\mathbb{S} = \mathbf{I}_{K,K} - \mathbf{1}_{K,K}$ \\
+  \rsa same inter-attribute interactions and no intra-attribute interactions
+  \item $\mathbb{S} = \mathbf{1}_{K,K}$ \\
+    \rsa full agreement between  attributes.
+  \end{enumerate}
+\item $\invcov$ is the nearest a positive definite approximation of $\mathbf{M}$
+\item Control the difficulty with $\gamma>0: \invcov= \invcov+ \gamma I$;
+\item Draw an i.i.d. $n$-size sample $\bX\in\Rset^{n\times pK}$ of
+  $X \sim \mathcal{N} \left( 0,\invcov^{-1} \right) .$
+\end{enumerate}
+
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Example: original graph + intra/inter/full aggrements}
+
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\textwidth]{figures/r_example_bivR_net-1} 
+
+\end{knitrout}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Simulation study: evaluation}
+
+  \begin{block}{Competitors}
+  \begin{itemize}
+  \item \texttt{multiattribute}: reconstruct one network with
+   $K$ data sets $\bX^{(1)}, \dots \bX^{(K)}$ all with size
+  $\Rset^{n\times p}$
+
+  \item \texttt{separate}: reconstruct $K$ networks with
+   $K$ data sets $\bX^{(1)}, \dots \bX^{(K)}$ all with size
+  $\Rset^{n\times p}$
+
+  \item the \texttt{merge} variant: reconstruct one network
+    by merging $\bX^{(1)}, \dots \bX^{(K)}$ into a single
+    $\tilde\bX$ data set in $\Rset^{nK \times p}$
+  \end{itemize}
+  \end{block}
+
+  \begin{block}{Performances}
+    Use area under ROC curve (AUC). For the \textit{separate} variant, the retained AUC is the AUC
+    averaged over all attributes.
+  \end{block}
+
+  \rsa Set $p=40$, vary $n, K$ and replicate 100 times
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Simulation study: results}
+
+  \includegraphics[width=\textwidth]{../../chapter/figures/res_simu_new}
+
+\end{frame}
 
 \include{applications}
 
@@ -239,14 +310,6 @@
     co-workers}
    \end{block}
 }
-
- 
-% \begin{frame}[allowframebreaks]
-%  \frametitle{References}
-%   \begin{tiny}
-%   \printbibliography
-%   \end{tiny}
-% \end{frame}
 
 \end{document}
 
