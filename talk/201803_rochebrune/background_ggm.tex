@@ -3,8 +3,8 @@
 \begin{frame}
   \frametitle{\alert{Gaussian} Graphical Model}
 
-  Suppose   the   profiles   of    the   genes/OTUs   is   such   that
-  $\mathbf{X}_i\sim\mathcal{N}(\bzr_p,\invcov^{-1})$.
+  Consider a size-$p$ Gaussian random vector:
+  $X\sim\mathcal{N}(\bzr_p,\invcov^{-1})$.
 
   \begin{itemize}
   \item independence is equivalent to null covariance/correlation
@@ -55,14 +55,14 @@
     Gene expression $X_j$ is linearly explained by the other genes':
 
     \begin{equation*}
-      \bX_j | \bX_{ \setminus j} = - \sum_{k \neq j}
-      \frac{\invcov_{jk}}{\invcov_{jj}} \bX_{k} + \varepsilon_j,\quad \varepsilon_j
+      X_j | X_{ \setminus j} = - \sum_{k \neq j}
+      \frac{\invcov_{jk}}{\invcov_{jj}} X_{k} + \varepsilon_j,\quad \varepsilon_j
       \sim \mathcal{N}(0,\invcov_{jj}^{-1}), \quad \varepsilon_j \perp X_j
       \end{equation*}
       Conditional  on its  neighborhood,  other profiles  do not  give additional insights
     \begin{equation*}
-      \bX_j | \bX_{ \setminus j} =
-       \sum_{k \in \text{ne(j)}} \beta_{jk} \bX_k + \varepsilon_j
+      X_j | X_{ \setminus j} =
+       \sum_{k \in \text{ne(j)}} \beta_{jk} X_k + \varepsilon_j
       \quad         \text{with         }         \beta_{jk}         =
       -\frac{\invcov_{jk}}{\invcov_{jj}}.
     \end{equation*}
@@ -177,8 +177,8 @@
         \left(\widehat{\boldsymbol\rho}_\lambda^{\text{space}}, \mathrm{diag}({\boldsymbol\invcov})\right) =
         \argmin_{\boldsymbol\rho,\mathrm{diag}({\boldsymbol\invcov})} \frac{1}{2}
         \sum_{j=1}^p \omega_j \left\|
-          \bX_j - \sum_{k=1}^p \rho_{jk} \sqrt{\frac{{\invcov}_{kk}}{{\invcov}_{jj}}}
-          \bX_k \right\|_{\ell_2}^2 + \lambda\ \| \boldsymbol\rho \|_{\ell_1}
+          \bx_j - \sum_{k=1}^p \rho_{jk} \sqrt{\frac{{\invcov}_{kk}}{{\invcov}_{jj}}}
+          \bx_k \right\|_{\ell_2}^2 + \lambda\ \| \boldsymbol\rho \|_{\ell_1}
       \end{equation*}
       \vspace*{-1.5em}
     \end{block}
