@@ -21,7 +21,7 @@
 #' @import gglasso
 #' @import stabsel
 #' @export
-multivarNetwork <- function(X, sym.rule="AND", select=c("none", "1se", "min" ,git"stabsel"),
+multivarNetwork <- function(X, sym.rule="AND", select=c("none", "1se", "min" ,"stabsel"),
                             nlambda=50, min.ratio=1e-3, mc.cores=1, nfold=5, cutoff=0.75) {
 
   select <- match.arg(select)
